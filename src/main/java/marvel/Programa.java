@@ -12,7 +12,7 @@ public class Programa {
         MarvelVista vista = new MarvelVista();
         MarvelControlador controlador = new MarvelControlador(vista);
 
-        System.out.println("Test");
+        controlador.ejecuta();
 
         Session session = HibernateUtil.get().openSession();
 

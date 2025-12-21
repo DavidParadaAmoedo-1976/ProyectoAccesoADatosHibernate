@@ -2,23 +2,24 @@ package marvel.modelo.enums;
 
 public enum MenuEnum {
 
-    CREAR_PERSONAJE("Crear personaje"),
-    BORRAR_PERSONAJE("Borrar personaje (por id)"),
-    MODIFICAR_PERSONAJE("Modificar personaje"),
+    SALIR("Salir"),
 
-    CREAR_HABILIDAD("Crear habilidad"),
-    BORRAR_HABILIDAD("Borrar habilidad (por nombre)"),
-    MODIFICAR_HABILIDAD("Modificar habilidad"),
+    CREAR_PERSONAJE("Crear personaje."),
+    BORRAR_PERSONAJE("Borrar personaje (por id)."),
+    MODIFICAR_PERSONAJE("Modificar personaje."),
 
-    ASIGNAR_HABILIDAD("Asignar habilidad a personaje"),
-    REGISTRAR_PARTICIPACION("Registrar participación en evento"),
-    CAMBIAR_TRAJE("Cambiar traje de un personaje"),
+    CREAR_HABILIDAD("Crear habilidad."),
+    BORRAR_HABILIDAD("Borrar habilidad."),
+    MODIFICAR_HABILIDAD("Modificar habilidad."),
 
-    MOSTRAR_PERSONAJE("Mostrar datos de un personaje"),
-    MOSTRAR_PERSONAJES_EVENTO("Mostrar personajes de un evento"),
-    CONTAR_POR_HABILIDAD("Contar personajes con una habilidad"),
+    ASIGNAR_HABILIDAD("Asignar habilidad a un personaje."),
+    REGISTRAR_PARTICIPACION("Registrar participación en un evento."),
+    CAMBIAR_TRAJE("Cambiar el traje de un personaje."),
 
-    SALIR("Salir");
+    MOSTRAR_PERSONAJE("Mostrar los datos de un personaje."),
+    MOSTRAR_PERSONAJES_EVENTO("Mostrar los personajes de un evento."),
+    CONTAR_POR_HABILIDAD("Contar cuantos personajes tienen una habilidad concreta.");
+
 
     private final String texto;
 
