@@ -2,6 +2,7 @@ package marvel;
 
 import marvel.controlador.MarvelControlador;
 import marvel.modelo.util.HibernateUtil;
+import marvel.servicios.PersonajeServicio;
 import marvel.vista.MarvelVista;
 import org.hibernate.Session;
 
@@ -13,10 +14,5 @@ public class Programa {
         MarvelControlador controlador = new MarvelControlador(vista);
 
         controlador.ejecuta();
-
-        Session session = HibernateUtil.get().openSession();
-
-        session.close();
-        System.out.println("Finalizando la conexion a MySQL");
     }
 }

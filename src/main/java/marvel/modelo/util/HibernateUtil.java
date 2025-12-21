@@ -10,9 +10,6 @@ public class HibernateUtil {
 
     static {
         try {
-//            String hibernatePropsFilePath = ".src/main/resources/hibernate.cfg.xml"; // Ruta al fichero
-//
-//            File hibernatePropsFile = new File(hibernatePropsFilePath);
 
             SESSION_FACTORY = new Configuration().configure().buildSessionFactory();
 
@@ -22,8 +19,14 @@ public class HibernateUtil {
         }
     }
 
-    public static SessionFactory get() {
+    public static SessionFactory getSessionFactory() {
         return SESSION_FACTORY;
+    }
+
+    public static void cerrar() {
+        if (SESSION_FACTORY != null && !SESSION_FACTORY.isClosed()) {
+            SESSION_FACTORY.close();
+        }
     }
 }
 

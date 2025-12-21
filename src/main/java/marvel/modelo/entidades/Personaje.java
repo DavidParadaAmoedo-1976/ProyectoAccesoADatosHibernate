@@ -18,14 +18,14 @@ public class Personaje {
     private int id;
 
     @NonNull
-    @Column(name = "Nombre")
+    @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "Alias")
+    @Column(name = "alias")
     private String alias;
 
-    @OneToOne
-    @JoinColumn( name = "Id_Traje")
+    @OneToOne(optional = true)
+    @JoinColumn( name = "id_Traje", unique = true, nullable = true)
     private Traje traje;
 
     @ManyToMany

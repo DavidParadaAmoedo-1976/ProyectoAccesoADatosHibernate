@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -12,13 +11,13 @@ import lombok.*;
 
 public class Traje {
     @Id
-    @EqualsAndHashCode.Include
     private int id;
 
     @NonNull
-    @Column( name = "Especificaciones")
+    @Column( name = "especificacion")
     private String especificacion;
 
-    @OneToOne( mappedBy = "id_personaje")
+    @OneToOne( mappedBy = "traje")
     private Personaje personaje;
+
 }

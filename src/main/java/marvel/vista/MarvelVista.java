@@ -1,8 +1,11 @@
 package marvel.vista;
 
+import marvel.modelo.entidades.Traje;
 import marvel.modelo.enums.EstilosEnum;
 import marvel.modelo.enums.MenuEnum;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class MarvelVista {
@@ -34,4 +37,35 @@ public class MarvelVista {
         System.out.println(mensaje);
         System.out.println();
     }
+
+
+    // Personaje
+
+    public String pedirNombrePersonaje() {
+        return solicitarEntrada("Nombre del personaje: ");
+    }
+
+    public String pedirAlias() {
+        return solicitarEntrada("Alias: ");
+    }
+
+    public String pedirEspecificacionTraje() {
+        return solicitarEntrada("Especificación del traje: ");
+    }
+
+
+    public void mostrarTrajesDisponibles(List<Traje> trajes) {
+        System.out.println("Trajes disponibles:");
+
+        if (trajes.isEmpty()) {
+            mensajeError("(No hay trajes disponibles)");
+        } else {
+            for (Traje traje : trajes) {
+                System.out.println(traje.getId() + " .- " + traje.getEspecificacion());
+            }
+        }
+        System.out.println("0 .- Crear traje nuevo");
+        System.out.println("Deja vacío si no quieres seleccionar traje.");
+    }
+
 }
