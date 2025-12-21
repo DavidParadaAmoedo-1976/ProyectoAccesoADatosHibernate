@@ -1,10 +1,7 @@
 package marvel.modelo.entidades;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,20 +9,19 @@ import java.util.Set;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table( name = "Personaje")
 public class Personaje {
     @Id
-    @NonNull
     @EqualsAndHashCode.Include
     private int id;
 
     @NonNull
-    @Column(name = "Nombre", nullable = false)
+    @Column(name = "Nombre")
     private String nombre;
 
-    @NonNull
-    @Column(name = "Alias", nullable = false)
+    @Column(name = "Alias")
     private String alias;
 
     @OneToOne
@@ -38,5 +34,8 @@ public class Personaje {
             inverseJoinColumns = @JoinColumn( name = "id_Habilidad")
     )
     private Set<Habilidad> habilidades = new HashSet<>();
+
+    @OneToMany(mappedBy = "personaje")
+    private Set<Participa> participaciones = new HashSet<>();
 
 }

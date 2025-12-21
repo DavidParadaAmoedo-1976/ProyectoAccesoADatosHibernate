@@ -12,13 +12,13 @@ import lombok.*;
 
 public class Traje {
     @Id
-    @NonNull
     @EqualsAndHashCode.Include
     private int id;
 
     @NonNull
+    @Column( name = "Especificaciones")
     private String especificacion;
 
-    @OneToOne( mappedBy = "Id_Personaje")
+    @OneToOne( mappedBy = "id_personaje")
     private Personaje personaje;
 }
