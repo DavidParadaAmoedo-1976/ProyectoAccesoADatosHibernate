@@ -8,9 +8,13 @@ import marvel.modelo.entidades.Traje;
 
 public class PersonajeServicio {
 
+    private final PersonajeDAO personajeDAO;
+    private final TrajeDAO trajeDAO;
 
-    private final PersonajeDAO personajeDAO = new PersonajeDAO();
-    private final TrajeDAO trajeDAO = new TrajeDAO();
+    public PersonajeServicio(PersonajeDAO personajeDAO, TrajeDAO trajeDAO) {
+        this.personajeDAO = personajeDAO;
+        this.trajeDAO = trajeDAO;
+    }
 
     public void crearPersonaje(String nombre, String alias, Traje traje) {
 
@@ -23,38 +27,73 @@ public class PersonajeServicio {
 
         if (traje != null) {
 
-            // si es nuevo, no tiene ID
             if (traje.getId() == 0) {
                 int idTraje = GenericDAO.siguienteId(Traje.class, "id");
                 traje.setId(idTraje);
                 trajeDAO.guardar(traje);
             }
-
             personaje.setTraje(traje);
             traje.setPersonaje(personaje);
         }
-
         personajeDAO.guardar(personaje);
     }
 
+    public void cambiarNombre(int idPersonaje, String nuevoNombre) {
 
-//    public void crearPersonaje(String nombre, String alias, Traje traje) {
-//
-//        Integer id_personaje = GenericDAO.siguienteId(Personaje.class,"id");
-//
-//        Personaje personaje = new Personaje();
-//        personaje.setId(id_personaje);
-//        personaje.setNombre(nombre);
-//        personaje.setAlias(alias);
-//
-//        if (traje != null) {
-//            // Traje YA existe en BD o se guarda antes
-//            personaje.setTraje(traje);
-//            traje.setPersonaje(personaje);
-//        }
-//
-//        personajeDAO.guardar(personaje);
-//    }
+        if (nuevoNombre == null || nuevoNombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío");
+        }
+
+        Personaje personaje = buscarPorId(idPersonaje);
+        personaje.setNombre(nuevoNombre);
+        personajeDAO.actualizar(personaje);
+    }
+
+
+
+    public void cambiarAlias(int idPersonaje, String nuevoAlias) {
+        if (nuevoAlias == null || nuevoAlias.isBlank()) {
+            throw new IllegalArgumentException("El Alias no puede estar vacío");
+        }
+        Personaje personaje = buscarPorId(idPersonaje);
+
+        personaje.setAlias(nuevoAlias);
+        personajeDAO.actualizar(personaje);
+    }
+
+
+    public void cambiarTraje(int idPersonaje, Traje nuevoTraje) {
+
+        Personaje personaje = buscarPorId(idPersonaje);
+
+        if (personaje.getTraje() != null) {
+            personaje.getTraje().setPersonaje(null);
+        }
+
+        if (nuevoTraje != null) {
+
+            if (nuevoTraje.getId() == 0) {
+                int idTraje = GenericDAO.siguienteId(Traje.class, "id");
+                nuevoTraje.setId(idTraje);
+                trajeDAO.guardar(nuevoTraje);
+            }
+
+            nuevoTraje.setPersonaje(personaje);
+            personaje.setTraje(nuevoTraje);
+        } else {
+            personaje.setTraje(null);
+        }
+
+        personajeDAO.actualizar(personaje);
+    }
+
+    private Personaje buscarPorId(int idPersonaje) {
+        Personaje personaje = personajeDAO.buscarPorId(idPersonaje);
+        if (personaje == null) {
+            throw new IllegalArgumentException("Personaje no encontrado");
+        }
+        return personaje;
+    }
 }
 
 

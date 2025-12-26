@@ -1,5 +1,6 @@
 package marvel.vista;
 
+import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
 import marvel.modelo.enums.EstilosEnum;
 import marvel.modelo.enums.MenuEnum;
@@ -20,6 +21,16 @@ public class MarvelVista {
         System.out.println("\t".repeat(2) + "0." + EstilosEnum.CYAN.getFormato() + "\tSalir." + EstilosEnum.RESET.getFormato());
     }
 
+    public void menuModificarPersonaje() {
+        System.out.println("""
+                                   Opcion modificar Personaje
+                    1.- Modificar Nombre.
+                    2.- Modificar Alias.
+                    3.- Modificar Traje.
+                    0.- Volver al menú anterior.
+                """);
+    }
+
     public String solicitarEntrada(String mensaje) {
         System.out.print(mensaje);
         return sc.nextLine().trim();
@@ -38,22 +49,6 @@ public class MarvelVista {
         System.out.println();
     }
 
-
-    // Personaje
-
-    public String pedirNombrePersonaje() {
-        return solicitarEntrada("Nombre del personaje: ");
-    }
-
-    public String pedirAlias() {
-        return solicitarEntrada("Alias: ");
-    }
-
-    public String pedirEspecificacionTraje() {
-        return solicitarEntrada("Especificación del traje: ");
-    }
-
-
     public void mostrarTrajesDisponibles(List<Traje> trajes) {
         System.out.println("Trajes disponibles:");
 
@@ -67,5 +62,19 @@ public class MarvelVista {
         System.out.println("0 .- Crear traje nuevo");
         System.out.println("Deja vacío si no quieres seleccionar traje.");
     }
+
+    public void mostrarPersonajes(List<Personaje> personajes) {
+        System.out.println("Personajes existentes:");
+
+        if (personajes.isEmpty()) {
+            mensajeError("(No hay personajes)");
+            return;
+        }
+
+        for (Personaje personaje : personajes) {
+            System.out.println(personaje.getId() + " .- " + personaje.getNombre() + " (" + personaje.getAlias() + ")");
+        }
+    }
+
 
 }
