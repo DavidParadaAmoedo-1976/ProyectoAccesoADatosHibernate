@@ -24,10 +24,10 @@ public class Participa {
     @JoinColumn(name = "id_evento")
     private Evento evento;
 
-    @Column(name = "Fecha")
+    @Column(name = "fecha")
     private LocalDate fecha;
 
-    @Column(name = "Rol")
+    @Column(name = "rol")
     private String rol;
 
 }

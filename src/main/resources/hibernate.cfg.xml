@@ -6,8 +6,14 @@
         <property name="connection.url">jdbc:mysql://localhost:3306/MarvelDB?createDatabaseIfNotExist=true&amp;serverTimezone=UTC</property>
         <property name="connection.username">root</property>
         <property name="connection.password">abc123.</property>
-        <property name="hbm2ddl.auto">create</property>
+        <property name="hbm2ddl.auto">validate</property>
         <property name="hibernate.dialect.storage_engine">innodb</property>
-        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.show_sql">false</property>
+
+        <mapping class="marvel.modelo.entidades.Personaje"/>
+        <mapping class="marvel.modelo.entidades.Traje"/>
+        <mapping class="marvel.modelo.entidades.Habilidad"/>
+        <mapping class="marvel.modelo.entidades.Evento"/>
+        <mapping class="marvel.modelo.entidades.Participa"/>
     </session-factory>
 </hibernate-configuration>

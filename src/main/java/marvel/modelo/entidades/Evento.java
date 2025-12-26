@@ -20,12 +20,12 @@ public class Evento {
     private int id;
 
     @NonNull
-    @Column(name = "Nombre")
+    @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "Lugar")
+    @Column(name = "lugar")
     private String lugar;
 
-    @OneToMany( mappedBy = "Evento")
+    @OneToMany( mappedBy = "evento")
     private Set<Participa> participaciones = new HashSet<>();
 }

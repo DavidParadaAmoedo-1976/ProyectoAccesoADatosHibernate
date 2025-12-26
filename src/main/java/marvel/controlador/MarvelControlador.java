@@ -1,36 +1,49 @@
 package marvel.controlador;
 
-import marvel.modelo.dao.GenericDAO;
-import marvel.modelo.dao.PersonajeDAO;
-import marvel.modelo.dao.TrajeDAO;
+import marvel.modelo.dao.*;
+import marvel.modelo.entidades.Habilidad;
 import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
 import marvel.modelo.enums.MenuEnum;
 import marvel.modelo.util.HibernateUtil;
+import marvel.servicios.HabilidadServicio;
 import marvel.servicios.PersonajeServicio;
 import marvel.vista.MarvelVista;
-import org.hibernate.Session;
 
 import java.util.List;
 
 public class MarvelControlador {
 
-    private final int ZERO = 0;
     private final MarvelVista vista;
-    private PersonajeServicio personajeServicio = null;
-    private TrajeDAO trajeDAO = null;
+    private final PersonajeServicio personajeServicio;
+    private final HabilidadServicio habilidadServicio;
+    private final TrajeDAO trajeDAO;
+    private final PersonajeDAO personajeDAO;
+    private final HabilidadDAO habilidadDAO;
+    private final EventoDAO eventoDAO;
 
-    public MarvelControlador(MarvelVista vista) {
+    public MarvelControlador(MarvelVista vista,
+                             PersonajeServicio personajeServicio,
+                             HabilidadServicio habilidadServicio,
+                             TrajeDAO trajeDAO,
+                             PersonajeDAO personajeDAO,
+                             HabilidadDAO habilidadDAO,
+                             EventoDAO eventoDAO)
+    {
         this.vista = vista;
-        this.personajeServicio = new PersonajeServicio();
-        this.trajeDAO = new TrajeDAO();
+        this.personajeServicio = personajeServicio;
+        this.habilidadServicio = habilidadServicio;
+        this.trajeDAO = trajeDAO;
+        this.personajeDAO = personajeDAO;
+        this.habilidadDAO = habilidadDAO;
+        this.eventoDAO = eventoDAO;
     }
 
     public void ejecuta() {
         MenuEnum opcion;
         while (true) {
             vista.mostrarMenu();
-            int seleccion = solicitarInt("\nIntroduce una opción: ", ZERO, MenuEnum.values().length - 1, false);
+            int seleccion = solicitarInt("\nIntroduce una opción: ", 0, MenuEnum.values().length - 1, false);
             opcion = MenuEnum.values()[seleccion];
             switch (opcion) {
                 case CREAR_PERSONAJE -> crearPersonaje();
@@ -61,18 +74,11 @@ public class MarvelControlador {
 
     private void crearPersonaje() {
         try {
-
             String nombre = vista.solicitarEntrada("Introduce el nombre del personaje:");
             String alias = vista.solicitarEntrada("Introduce el alias del personaje: ");
-
-            int idTraje = seleccionarTraje().getId();
-            String especificacion = seleccionarTraje().getEspecificacion();
             Traje traje = seleccionarTraje();
-
             personajeServicio.crearPersonaje(nombre, alias, traje);
-
             vista.mensaje("Personaje creado correctamente");
-
         } catch (IllegalArgumentException e) {
             vista.mensajeError("ERROR: " + e.getMessage());
         }
@@ -80,15 +86,99 @@ public class MarvelControlador {
 
 
     private void borrarPersonaje() {
+
+        List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
+        vista.mensaje("Has seleccionado la opcion de borrar personaje");
+        vista.mostrarPersonajes(personajes);
+        vista.mensaje("0.- Volver al menu anterior");
+        if (personajes.isEmpty()) {
+            vista.mensaje("No hay personajes registrados.");
+            return;
+        }
+
+        int id = solicitarInt("Selecciona el personaje a borrar: ", 0, personajes.size(), false);
+        if (id == 0) return;
+        Personaje personaje = personajes.get(id-1);
+
+        if (personaje.getTraje() != null) {
+            personaje.getTraje().setPersonaje(null);
+            personaje.setTraje(null);
+        }
+
+        personajeDAO.borrarPersonaje(personaje);
+        vista.mensaje("Personaje borrado correctamente.");
     }
 
+
     private void modificarPersonaje() {
+        final int MAX_MENU=3;
+
+        List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
+
+        if (personajes.isEmpty()) {
+            vista.mensaje("No hay personajes registrados.");
+            return;
+        }
+        vista.mensaje("Has seleccionado la opcion de modificar personaje");
+        vista.mostrarPersonajes(personajes);
+        vista.mensaje("0.- Volver al menu anterior");
+
+        int id = solicitarInt("Selecciona el personaje a modificar: ", 0, personajes.size(), false);
+        if (id == 0) return;
+        Personaje personaje = personajes.get(id-1);
+        int idPersonaje = personaje.getId();
+
+        int opcion;
+        while (true) {
+            vista.menuModificarPersonaje();
+            opcion = solicitarInt("Seleccione una opción: ",0, MAX_MENU,false);
+            switch (opcion){
+                case 1: {
+                    String nuevoNombre = vista.solicitarEntrada("Nuevo nombre: ");
+                    personajeServicio.cambiarNombre(idPersonaje, nuevoNombre);
+                    vista.mensaje("Nombre actualizado.");
+                    break;
+                }
+                case 2: {
+                    String nuevoAlias = vista.solicitarEntrada("Nuevo alias: ");
+                    personajeServicio.cambiarAlias(idPersonaje,nuevoAlias);
+                    vista.mensaje("Alias actualizado.");
+                    break;
+                }
+                case 3: {
+                    Traje nuevoTraje = seleccionarTraje();
+                    personajeServicio.cambiarTraje(idPersonaje,nuevoTraje);
+                    vista.mensaje("Traje actualizado.");
+                    break;
+                }
+                case 0:  {
+                    vista.mensaje("Volver al menú principal");
+                    return;
+                }
+            }
+        }
     }
 
     private void crearHabilidad() {
+        try {
+            String nombre = vista.solicitarEntrada("Nombre de la Habilidad: ");
+            String descripcion = vista.solicitarEntrada("Descripcion de la Habilidad: ");
+            habilidadServicio.crearHabilidad(nombre, descripcion);
+            vista.mensaje("Habilidad creada correctamente.");
+        } catch (IllegalArgumentException e) {
+            vista.mensajeError("ERROR: " + e.getMessage());
+        }
     }
 
     private void borrarHabilidad() {
+        List<Habilidad> habilidades = habilidadDAO.buscarTodasLasHabilidades();
+        vista.mostrarHabilidades(habilidades);
+        vista.mensaje("Vas a borrar una habilidad.");
+        String nombre = vista.solicitarEntrada("Nombre de la habilidad que quieres borrar: ");
+        Habilidad habilidad = habilidadServicio.buscarPorNombre(nombre);
+        habilidadDAO.borrarHabilidad(habilidad);
+
+        vista.mensaje("Habilidad borrada correctamente.");
     }
 
     private void modificarHabilidad() {
@@ -147,7 +237,7 @@ public class MarvelControlador {
 
             Traje nuevoTraje = new Traje();
             nuevoTraje.setEspecificacion(especificacion);
-            return nuevoTraje; // 👉 sin ID, sin guardar
+            return nuevoTraje;
         }
 
         Traje traje = trajeDAO.buscarPorId(opcion);
@@ -159,30 +249,4 @@ public class MarvelControlador {
         return traje;
     }
 
-
-//    private Traje seleccionarTraje() {
-//
-//        List<Traje> disponibles = trajeDAO.buscarDisponibles();
-//        vista.mostrarTrajesDisponibles(disponibles);
-//
-//        int opcion = solicitarInt("Elige ID de traje: ", 0, Integer.MAX_VALUE, true);
-//
-//        if (opcion == -1) {
-//            return null; // sin traje
-//        }
-//
-//        if (opcion == 0) {
-//            String esp = vista.solicitarEntrada("Especificación del nuevoTraje traje: ");
-//
-//            int nuevoID = GenericDAO.siguienteId(Traje.class, "id");
-//
-//            Traje nuevoTraje = new Traje();
-//            nuevoTraje.setId(nuevoID);
-//            nuevoTraje.setEspecificacion(esp);
-//
-//            trajeDAO.guardar(nuevoTraje);
-//            return nuevoTraje;
-//        }
-//        return trajeDAO.buscarPorId(opcion);
-//    }
 }

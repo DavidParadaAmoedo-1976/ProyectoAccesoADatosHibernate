@@ -25,7 +25,7 @@ public class Personaje {
     private String alias;
 
     @OneToOne(optional = true)
-    @JoinColumn( name = "id_Traje", unique = true, nullable = true)
+    @JoinColumn( name = "id_traje", unique = true, nullable = true)
     private Traje traje;
 
     @ManyToMany

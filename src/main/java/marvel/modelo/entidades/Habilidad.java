@@ -19,10 +19,10 @@ public class Habilidad {
     private int id;
 
     @NonNull
-    @Column(name = "Nombre")
+    @Column(name = "nombre")
     private String nombre;
 
-    @Column(name = "Descripción")
+    @Column(name = "descripcion")
     private String descripcion;
 
     @ManyToMany(mappedBy = "habilidades")
