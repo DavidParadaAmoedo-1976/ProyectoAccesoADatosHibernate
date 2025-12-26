@@ -31,5 +31,6 @@ public class TrajeDAO {
         session.close();
         return lista;
     }
+
 }
 

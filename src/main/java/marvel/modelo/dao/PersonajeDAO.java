@@ -59,4 +59,5 @@ public class PersonajeDAO {
         session.close();
         return personaje;
     }
+
 }

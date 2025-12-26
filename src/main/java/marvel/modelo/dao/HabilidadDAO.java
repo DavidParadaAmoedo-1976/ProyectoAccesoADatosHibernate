@@ -51,4 +51,5 @@ public class HabilidadDAO {
         tx.commit();
         session.close();
     }
+
 }

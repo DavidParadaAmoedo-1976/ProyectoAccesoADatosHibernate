@@ -4,6 +4,7 @@ public enum EstilosEnum {
 
     RESET("\u001B[0m"),
 
+
     // Colores basicos
     NEGRO("\u001B[30m"),
     ROJO("\u001B[31m"),

@@ -30,4 +30,5 @@ public class Participa {
     @Column(name = "rol")
     private String rol;
 
+
 }

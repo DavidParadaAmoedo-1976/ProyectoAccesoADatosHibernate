@@ -26,5 +26,6 @@ public class GenericDAO {
 
         return (idMaximo == null) ? 1 : idMaximo + 1;
     }
+
 }
 

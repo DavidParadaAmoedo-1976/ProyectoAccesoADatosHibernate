@@ -28,4 +28,5 @@ public class Evento {
 
     @OneToMany( mappedBy = "evento")
     private Set<Participa> participaciones = new HashSet<>();
+
 }

@@ -32,6 +32,7 @@ public class MarvelVista {
                 """);
     }
 
+
     public String solicitarEntrada(String mensaje) {
         System.out.print(mensaje);
         return sc.nextLine().trim();

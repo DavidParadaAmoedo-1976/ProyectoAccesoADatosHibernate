@@ -20,4 +20,5 @@ public class Traje {
     @OneToOne( mappedBy = "traje")
     private Personaje personaje;
 
+
 }
