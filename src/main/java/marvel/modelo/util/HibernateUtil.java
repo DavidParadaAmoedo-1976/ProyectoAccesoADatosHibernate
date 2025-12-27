@@ -1,6 +1,5 @@
 package marvel.modelo.util;
 
-import java.io.File;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -13,7 +12,7 @@ public class HibernateUtil {
 
             SESSION_FACTORY = new Configuration().configure().buildSessionFactory();
 
-        }catch(Throwable ex) {
+        } catch (Throwable ex) {
             System.err.println("Error al crear la configuración de hibernate" + ex.getMessage());
             throw new ExceptionInInitializerError();
         }

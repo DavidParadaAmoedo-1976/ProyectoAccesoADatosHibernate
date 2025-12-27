@@ -22,7 +22,7 @@ public class Programa {
         GenericDAO genericDAO = new GenericDAO();
 
         PersonajeServicio personajeServicio =
-                new PersonajeServicio(personajeDAO, trajeDAO);
+                new PersonajeServicio(personajeDAO, trajeDAO, habilidadDAO);
         HabilidadServicio habilidadServicio = new HabilidadServicio(habilidadDAO);
 
         MarvelControlador controlador = new MarvelControlador(

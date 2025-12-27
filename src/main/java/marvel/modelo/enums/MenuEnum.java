@@ -21,14 +21,14 @@ public enum MenuEnum {
     CONTAR_POR_HABILIDAD("Contar cuantos personajes tienen una habilidad concreta.");
 
 
-    private final String texto;
+    private final String TEXTO;
 
-    MenuEnum(String texto) {
-        this.texto = texto;
+    MenuEnum(String TEXTO) {
+        this.TEXTO = TEXTO;
     }
 
-    public String getTexto() {
-        return texto;
+    public String gettexto() {
+        return TEXTO;
     }
 
 }

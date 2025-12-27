@@ -30,13 +30,13 @@ public class HabilidadDAO {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         Habilidad habilidad = session.createQuery("FROM Habilidad h WHERE lower(h.nombre) = :nombre",
-                                Habilidad.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
+                Habilidad.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
 
         session.close();
         return habilidad;
     }
 
-    public void borrarHabilidad(Habilidad habilidad){
+    public void borrarHabilidad(Habilidad habilidad) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
         session.remove(habilidad);
@@ -44,7 +44,7 @@ public class HabilidadDAO {
         session.close();
     }
 
-    public void actualizarHabilidad(Habilidad habilidad){
+    public void actualizarHabilidad(Habilidad habilidad) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction tx = session.beginTransaction();
         session.merge(habilidad);

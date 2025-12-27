@@ -5,7 +5,8 @@ import org.hibernate.Session;
 
 public class GenericDAO {
 
-    public GenericDAO() {}
+    public GenericDAO() {
+    }
 
     public static <T> int siguienteId(Class<T> entidad, String nombreCampoId) {
 

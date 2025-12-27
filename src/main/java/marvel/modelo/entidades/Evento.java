@@ -26,7 +26,7 @@ public class Evento {
     @Column(name = "lugar")
     private String lugar;
 
-    @OneToMany( mappedBy = "evento")
+    @OneToMany(mappedBy = "evento")
     private Set<Participa> participaciones = new HashSet<>();
 
 }

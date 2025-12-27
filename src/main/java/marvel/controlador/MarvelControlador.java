@@ -1,10 +1,15 @@
 package marvel.controlador;
 
-import marvel.modelo.dao.*;
+import marvel.modelo.dao.EventoDAO;
+import marvel.modelo.dao.HabilidadDAO;
+import marvel.modelo.dao.PersonajeDAO;
+import marvel.modelo.dao.TrajeDAO;
 import marvel.modelo.entidades.Habilidad;
 import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
 import marvel.modelo.enums.MenuEnum;
+import marvel.modelo.enums.ModificarHabilidadEnum;
+import marvel.modelo.enums.ModificarPersonajeEnum;
 import marvel.modelo.util.HibernateUtil;
 import marvel.servicios.HabilidadServicio;
 import marvel.servicios.PersonajeServicio;
@@ -28,8 +33,7 @@ public class MarvelControlador {
                              TrajeDAO trajeDAO,
                              PersonajeDAO personajeDAO,
                              HabilidadDAO habilidadDAO,
-                             EventoDAO eventoDAO)
-    {
+                             EventoDAO eventoDAO) {
         this.vista = vista;
         this.personajeServicio = personajeServicio;
         this.habilidadServicio = habilidadServicio;
@@ -57,7 +61,7 @@ public class MarvelControlador {
                 case CAMBIAR_TRAJE -> cambiarTraje();
                 case MOSTRAR_PERSONAJE -> mostrarDatosPersonaje();
                 case MOSTRAR_PERSONAJES_EVENTO -> mostrarPersonajesEvento();
-                case CONTAR_POR_HABILIDAD -> contarPersonajesPorHabilidad();
+                case CONTAR_POR_HABILIDAD -> MostrarPersonajesPorHabilidad();
                 case SALIR -> {
                     vista.mensaje("Saliendo del programa ....");
                     cerrarAplicacion();
@@ -89,7 +93,7 @@ public class MarvelControlador {
 
         List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
         vista.mensaje("Has seleccionado la opcion de borrar personaje");
-        vista.mostrarPersonajes(personajes);
+        vista.mostrarPersonajes(personajes, true);
         vista.mensaje("0.- Volver al menu anterior");
         if (personajes.isEmpty()) {
             vista.mensaje("No hay personajes registrados.");
@@ -98,7 +102,7 @@ public class MarvelControlador {
 
         int id = solicitarInt("Selecciona el personaje a borrar: ", 0, personajes.size(), false);
         if (id == 0) return;
-        Personaje personaje = personajes.get(id-1);
+        Personaje personaje = personajes.get(id - 1);
 
         if (personaje.getTraje() != null) {
             personaje.getTraje().setPersonaje(null);
@@ -111,8 +115,6 @@ public class MarvelControlador {
 
 
     private void modificarPersonaje() {
-        final int MAX_MENU=3;
-
         List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
 
         if (personajes.isEmpty()) {
@@ -120,38 +122,39 @@ public class MarvelControlador {
             return;
         }
         vista.mensaje("Has seleccionado la opcion de modificar personaje");
-        vista.mostrarPersonajes(personajes);
+        vista.mostrarPersonajes(personajes, true);
         vista.mensaje("0.- Volver al menu anterior");
 
         int id = solicitarInt("Selecciona el personaje a modificar: ", 0, personajes.size(), false);
         if (id == 0) return;
-        Personaje personaje = personajes.get(id-1);
+        Personaje personaje = personajes.get(id - 1);
         int idPersonaje = personaje.getId();
 
-        int opcion;
+        ModificarPersonajeEnum opcion;
         while (true) {
-            vista.menuModificarPersonaje();
-            opcion = solicitarInt("Seleccione una opción: ",0, MAX_MENU,false);
-            switch (opcion){
-                case 1: {
+            vista.mostrarMenuModificarPersonaje();
+            int seleccion = solicitarInt("\nIntroduce una opción: ", 0, ModificarPersonajeEnum.values().length - 1, false);
+            opcion = ModificarPersonajeEnum.values()[seleccion];
+            switch (opcion) {
+                case NOMBRE: {
                     String nuevoNombre = vista.solicitarEntrada("Nuevo nombre: ");
                     personajeServicio.cambiarNombre(idPersonaje, nuevoNombre);
                     vista.mensaje("Nombre actualizado.");
                     break;
                 }
-                case 2: {
+                case ALIAS: {
                     String nuevoAlias = vista.solicitarEntrada("Nuevo alias: ");
-                    personajeServicio.cambiarAlias(idPersonaje,nuevoAlias);
+                    personajeServicio.cambiarAlias(idPersonaje, nuevoAlias);
                     vista.mensaje("Alias actualizado.");
                     break;
                 }
-                case 3: {
+                case TRAJE: {
                     Traje nuevoTraje = seleccionarTraje();
-                    personajeServicio.cambiarTraje(idPersonaje,nuevoTraje);
+                    personajeServicio.cambiarTraje(idPersonaje, nuevoTraje);
                     vista.mensaje("Traje actualizado.");
                     break;
                 }
-                case 0:  {
+                case SALIR: {
                     vista.mensaje("Volver al menú principal");
                     return;
                 }
@@ -172,21 +175,115 @@ public class MarvelControlador {
     }
 
     private void borrarHabilidad() {
-        List<Habilidad> habilidades = habilidadDAO.buscarTodasLasHabilidades();
-        vista.mostrarHabilidades(habilidades);
-        vista.mensaje("Vas a borrar una habilidad.");
-        String nombre = vista.solicitarEntrada("Nombre de la habilidad que quieres borrar: ");
-        Habilidad habilidad = habilidadServicio.buscarPorNombre(nombre);
-        habilidadDAO.borrarHabilidad(habilidad);
 
-        vista.mensaje("Habilidad borrada correctamente.");
+        List<Habilidad> habilidades = habilidadDAO.buscarTodasLasHabilidades();
+        vista.mostrarHabilidades(habilidades, false);
+
+        if (habilidades.isEmpty()) {
+            return;
+        }
+
+        while (true) {
+            vista.mensaje("\nVas a borrar una habilidad.");
+            vista.mensaje("Escribe 0 para volver al menú.");
+
+            String nombre = vista
+                    .solicitarEntrada("Nombre de la habilidad que quieres borrar: ").trim().toLowerCase();
+
+            if (nombre.equals("0")) {
+                return;
+            }
+
+            try {
+                Habilidad habilidad = habilidadServicio.buscarPorNombre(nombre);
+                habilidadDAO.borrarHabilidad(habilidad);
+
+                vista.mensaje("Habilidad borrada correctamente.");
+                return;
+
+            } catch (IllegalArgumentException e) {
+                vista.mensajeError(e.getMessage());
+
+            }
+        }
     }
 
+
     private void modificarHabilidad() {
+        List<Habilidad> habilidades = habilidadDAO.buscarTodasLasHabilidades();
+        vista.mensaje("Vas a modificar una habilidad.");
+        vista.mostrarHabilidades(habilidades, true);
+        vista.mensaje("0.- Volver al menu anterior");
+        if (habilidades.isEmpty()) {
+            vista.mensaje("No hay habilidades para modificar.");
+        }
+        int id = solicitarInt("Seleccione una habilidad: ", 0, habilidades.size() - 1, false);
+        Habilidad habilidad = habilidades.get(id - 1);
+        String nombreHabilidad = habilidad.getNombre();
+        vista.mensaje("Has selecionado la habilidad: " + habilidad.getNombre());
+
+        ModificarHabilidadEnum opcion;
+        while (true) {
+            vista.mostrarMenuModificarHabilidad();
+            int seleccion = solicitarInt("Seleccione una opción: ", 0, habilidades.size() - 1, false);
+            opcion = ModificarHabilidadEnum.values()[seleccion];
+            switch (opcion) {
+                case NOMBRE: {
+                    String nuevoNombre = vista.solicitarEntrada("Nuevo nombre para la habilidad: ");
+                    habilidadServicio.cambiarNombre(nombreHabilidad, nuevoNombre);
+                    vista.mensaje("Nombre de habilidad cambiado correctamente.");
+                    break;
+                }
+                case DESCRIPCION: {
+                    String nuevaDescripcion = vista.solicitarEntrada("Nueva descripción para la habilidad: ");
+                    habilidadServicio.cambiarDescripcion(nombreHabilidad, nuevaDescripcion);
+                    vista.mensaje("Descripcion de la habilidad cambiada correctamente.");
+                    break;
+                }
+
+                case SALIR: {
+                    vista.mensaje("Volver al menú principal");
+                    return;
+                }
+            }
+        }
+
     }
 
     private void asignarHabilidad() {
+        List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
+        List<Habilidad> habilidades = habilidadDAO.buscarTodasLasHabilidades();
+        if (personajes.isEmpty() || habilidades.isEmpty()) {
+            vista.mensaje("No hay personajes o habilidades disponibles.");
+            return;
+        }
+        while (true) {
+            try {
+                vista.mensaje("Vas a asignar una habilidad a un personaje.");
+
+                vista.mostrarPersonajes(personajes, false);
+                String nombrePersonaje =
+                        vista.solicitarEntrada("Nombre del personaje (0 para salir): ").trim();
+
+                if (nombrePersonaje.equals("0")) return;
+
+                vista.mostrarHabilidades(habilidades, false);
+                String nombreHabilidad =
+                        vista.solicitarEntrada("Nombre de la habilidad (0 para salir): ").trim();
+
+                if (nombreHabilidad.equals("0")) return;
+
+                personajeServicio.asignarHabilidad(nombrePersonaje, nombreHabilidad);
+
+                vista.mensaje("Habilidad asignada correctamente.");
+                return;
+
+            } catch (IllegalArgumentException e) {
+                vista.mensajeError(e.getMessage());
+            }
+        }
     }
+
 
     private void registrarParticipacion() {
     }
@@ -200,7 +297,7 @@ public class MarvelControlador {
     private void mostrarPersonajesEvento() {
     }
 
-    private void contarPersonajesPorHabilidad() {
+    private void MostrarPersonajesPorHabilidad() {
     }
 
     private int solicitarInt(String mensaje, int min, int max, boolean permitirNulo) {

@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table( name = "Personaje")
+@Table(name = "Personaje")
 public class Personaje {
     @Id
     @EqualsAndHashCode.Include
@@ -25,13 +25,13 @@ public class Personaje {
     private String alias;
 
     @OneToOne(optional = true)
-    @JoinColumn( name = "id_traje", unique = true, nullable = true)
+    @JoinColumn(name = "id_traje", unique = true, nullable = true)
     private Traje traje;
 
     @ManyToMany
-    @JoinTable( name = "Personaje_Habilidad",
+    @JoinTable(name = "Personaje_Habilidad",
             joinColumns = @JoinColumn(name = "id_Personaje"),
-            inverseJoinColumns = @JoinColumn( name = "id_Habilidad")
+            inverseJoinColumns = @JoinColumn(name = "id_Habilidad")
     )
     private Set<Habilidad> habilidades = new HashSet<>();
 

@@ -1,8 +1,10 @@
 package marvel.servicios;
 
 import marvel.modelo.dao.GenericDAO;
+import marvel.modelo.dao.HabilidadDAO;
 import marvel.modelo.dao.PersonajeDAO;
 import marvel.modelo.dao.TrajeDAO;
+import marvel.modelo.entidades.Habilidad;
 import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
 
@@ -11,10 +13,12 @@ public class PersonajeServicio {
 
     private final PersonajeDAO personajeDAO;
     private final TrajeDAO trajeDAO;
+    private final HabilidadDAO habilidadDAO;
 
-    public PersonajeServicio(PersonajeDAO personajeDAO, TrajeDAO trajeDAO) {
+    public PersonajeServicio(PersonajeDAO personajeDAO, TrajeDAO trajeDAO, HabilidadDAO habilidadDAO) {
         this.personajeDAO = personajeDAO;
         this.trajeDAO = trajeDAO;
+        this.habilidadDAO = habilidadDAO;
     }
 
     public void crearPersonaje(String nombre, String alias, Traje traje) {
@@ -96,11 +100,45 @@ public class PersonajeServicio {
     }
 
     public Personaje buscarPorNombre(String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío");
+        }
         Personaje personaje = personajeDAO.buscarPersonajePorNombre(nombre);
         if (personaje == null) {
             throw new RuntimeException("Personaje no encontrad0");
         }
         return personaje;
+    }
+
+    public void asignarHabilidad(String nombrePersonaje, String nombreHabilidad) {
+
+        if (nombrePersonaje == null || nombrePersonaje.isBlank()) {
+            throw new IllegalArgumentException("El nombre del personaje no puede estar vacío");
+        }
+
+        if (nombreHabilidad == null || nombreHabilidad.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la habilidad no puede estar vacío");
+        }
+
+        Personaje personaje = personajeDAO.buscarPersonajePorNombre(nombrePersonaje);
+        Habilidad habilidad = habilidadDAO.buscarHabilidadPorNombre(nombreHabilidad);
+
+        if (personaje == null) {
+            throw new IllegalArgumentException("Personaje no encontrado");
+        }
+
+        if (habilidad == null) {
+            throw new IllegalArgumentException("Habilidad no encontrada");
+        }
+
+        if (personaje.getHabilidades().contains(habilidad)) {
+            throw new IllegalArgumentException("El personaje ya tiene esa habilidad");
+        }
+
+        personaje.getHabilidades().add(habilidad);
+        habilidad.getPersonajes().add(personaje);
+
+        personajeDAO.actualizarPersonaje(personaje);
     }
 }
 
