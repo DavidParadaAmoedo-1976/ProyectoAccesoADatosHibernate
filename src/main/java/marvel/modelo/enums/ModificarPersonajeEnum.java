@@ -1,7 +1,7 @@
 package marvel.modelo.enums;
 
 public enum ModificarPersonajeEnum {
-    SALIR("Volver almenú anterior."),
+    SALIR("Volver al menú anterior."),
 
     NOMBRE("Modificar nombre."),
     ALIAS("Modificar alias."),

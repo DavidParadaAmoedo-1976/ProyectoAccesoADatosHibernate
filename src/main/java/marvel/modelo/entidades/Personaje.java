@@ -37,6 +37,4 @@ public class Personaje {
 
     @OneToMany(mappedBy = "personaje")
     private Set<Participa> participaciones = new HashSet<>();
-
-
 }

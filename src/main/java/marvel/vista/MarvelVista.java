@@ -29,7 +29,7 @@ public class MarvelVista {
         for (int i = 1; i < opciones.length; i++) {
             System.out.println(i + ".-\t" + opciones[i].getTexto());
         }
-        System.out.println("0.-  Volver al menú anterior.");
+        System.out.println("0.-\tVolver al menú anterior.");
     }
 
     public void mostrarMenuModificarHabilidad() {
@@ -38,7 +38,7 @@ public class MarvelVista {
         for (int i = 1; i < opciones.length; i++) {
             System.out.println(i + ".-\t" + opciones[i].getTexto());
         }
-        System.out.println("0.-  Volver al menú anterior.");
+        System.out.println("0.-\tVolver al menú anterior.");
     }
 
 
@@ -70,7 +70,7 @@ public class MarvelVista {
                 System.out.println(traje.getId() + " .- " + traje.getEspecificacion());
             }
         }
-        System.out.println("0 .- Crear traje nuevo");
+        System.out.println("0.- Crear traje nuevo");
         System.out.println("Deja vacío si no quieres seleccionar traje.");
     }
 

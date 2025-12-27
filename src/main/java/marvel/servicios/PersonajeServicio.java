@@ -105,7 +105,7 @@ public class PersonajeServicio {
         }
         Personaje personaje = personajeDAO.buscarPersonajePorNombre(nombre);
         if (personaje == null) {
-            throw new RuntimeException("Personaje no encontrad0");
+            throw new RuntimeException("Personaje no encontrado");
         }
         return personaje;
     }

@@ -225,7 +225,7 @@ public class MarvelControlador {
         ModificarHabilidadEnum opcion;
         while (true) {
             vista.mostrarMenuModificarHabilidad();
-            int seleccion = solicitarInt("Seleccione una opción: ", 0, habilidades.size() - 1, false);
+            int seleccion = solicitarInt("Seleccione una opción: ", 0, ModificarHabilidadEnum.values().length - 1, false);
             opcion = ModificarHabilidadEnum.values()[seleccion];
             switch (opcion) {
                 case NOMBRE: {
@@ -247,7 +247,6 @@ public class MarvelControlador {
                 }
             }
         }
-
     }
 
     private void asignarHabilidad() {
@@ -346,5 +345,4 @@ public class MarvelControlador {
 
         return traje;
     }
-
 }
