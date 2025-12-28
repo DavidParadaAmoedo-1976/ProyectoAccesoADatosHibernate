@@ -20,7 +20,6 @@ public class PersonajeServicio {
         this.trajeDAO = trajeDAO;
         this.habilidadDAO = habilidadDAO;
     }
-
     public void crearPersonaje(String nombre, String alias, Traje traje) {
 
         int idPersonaje = GenericDAO.siguienteId(Personaje.class, "id");
@@ -31,15 +30,10 @@ public class PersonajeServicio {
         personaje.setAlias(alias);
 
         if (traje != null) {
-
-            if (traje.getId() == 0) {
-                int idTraje = GenericDAO.siguienteId(Traje.class, "id");
-                traje.setId(idTraje);
-                trajeDAO.guardar(traje);
-            }
             personaje.setTraje(traje);
             traje.setPersonaje(personaje);
         }
+
         personajeDAO.guardarPersonaje(personaje);
     }
 
@@ -53,7 +47,6 @@ public class PersonajeServicio {
         personaje.setNombre(nuevoNombre);
         personajeDAO.actualizarPersonaje(personaje);
     }
-
 
     public void cambiarAlias(int idPersonaje, String nuevoAlias) {
         if (nuevoAlias == null || nuevoAlias.isBlank()) {
@@ -75,13 +68,6 @@ public class PersonajeServicio {
         }
 
         if (nuevoTraje != null) {
-
-            if (nuevoTraje.getId() == 0) {
-                int idTraje = GenericDAO.siguienteId(Traje.class, "id");
-                nuevoTraje.setId(idTraje);
-                trajeDAO.guardar(nuevoTraje);
-            }
-
             nuevoTraje.setPersonaje(personaje);
             personaje.setTraje(nuevoTraje);
         } else {
@@ -90,6 +76,7 @@ public class PersonajeServicio {
 
         personajeDAO.actualizarPersonaje(personaje);
     }
+
 
     public Personaje buscarPorId(int idPersonaje) {
         Personaje personaje = personajeDAO.buscarPersonajePorId(idPersonaje);

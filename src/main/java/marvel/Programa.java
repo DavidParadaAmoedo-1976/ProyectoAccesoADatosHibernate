@@ -2,9 +2,11 @@ package marvel;
 
 import marvel.controlador.MarvelControlador;
 import marvel.modelo.dao.*;
+import marvel.modelo.entidades.Traje;
 import marvel.modelo.util.HibernateUtil;
 import marvel.servicios.HabilidadServicio;
 import marvel.servicios.PersonajeServicio;
+import marvel.servicios.TrajeServicio;
 import marvel.vista.MarvelVista;
 
 public class Programa {
@@ -21,14 +23,15 @@ public class Programa {
         EventoDAO eventoDAO = new EventoDAO();
         GenericDAO genericDAO = new GenericDAO();
 
-        PersonajeServicio personajeServicio =
-                new PersonajeServicio(personajeDAO, trajeDAO, habilidadDAO);
+        PersonajeServicio personajeServicio = new PersonajeServicio(personajeDAO, trajeDAO, habilidadDAO);
         HabilidadServicio habilidadServicio = new HabilidadServicio(habilidadDAO);
+        TrajeServicio trajeServicio = new TrajeServicio(trajeDAO);
 
         MarvelControlador controlador = new MarvelControlador(
                 vista,
                 personajeServicio,
                 habilidadServicio,
+                trajeServicio,
                 trajeDAO,
                 personajeDAO,
                 habilidadDAO,

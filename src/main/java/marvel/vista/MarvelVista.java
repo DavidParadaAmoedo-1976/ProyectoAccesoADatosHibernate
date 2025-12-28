@@ -71,6 +71,7 @@ public class MarvelVista {
             }
         }
         System.out.println("0.- Crear traje nuevo");
+        System.out.println("1.- Seleccionar un traje");
         System.out.println("Deja vacío si no quieres seleccionar traje.");
     }
 
@@ -78,7 +79,7 @@ public class MarvelVista {
         System.out.println("Personajes existentes:");
         int cont = 1;
         for (Personaje personaje : personajes) {
-            System.out.println((id ? (cont + ".- ") : "") + personaje.getId() + " .- " + personaje.getNombre() + " (" + personaje.getAlias() + ")");
+            System.out.println((id ? (cont + ".- ") : "") + personaje.getNombre() + " (" + personaje.getAlias() + ")");
             cont++;
         }
     }

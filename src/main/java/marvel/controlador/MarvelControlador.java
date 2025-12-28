@@ -13,6 +13,7 @@ import marvel.modelo.enums.ModificarPersonajeEnum;
 import marvel.modelo.util.HibernateUtil;
 import marvel.servicios.HabilidadServicio;
 import marvel.servicios.PersonajeServicio;
+import marvel.servicios.TrajeServicio;
 import marvel.vista.MarvelVista;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class MarvelControlador {
     private final MarvelVista vista;
     private final PersonajeServicio personajeServicio;
     private final HabilidadServicio habilidadServicio;
+    private final TrajeServicio trajeServicio;
     private final TrajeDAO trajeDAO;
     private final PersonajeDAO personajeDAO;
     private final HabilidadDAO habilidadDAO;
@@ -30,6 +32,7 @@ public class MarvelControlador {
     public MarvelControlador(MarvelVista vista,
                              PersonajeServicio personajeServicio,
                              HabilidadServicio habilidadServicio,
+                             TrajeServicio trajeServicio,
                              TrajeDAO trajeDAO,
                              PersonajeDAO personajeDAO,
                              HabilidadDAO habilidadDAO,
@@ -37,6 +40,7 @@ public class MarvelControlador {
         this.vista = vista;
         this.personajeServicio = personajeServicio;
         this.habilidadServicio = habilidadServicio;
+        this.trajeServicio = trajeServicio;
         this.trajeDAO = trajeDAO;
         this.personajeDAO = personajeDAO;
         this.habilidadDAO = habilidadDAO;
@@ -283,11 +287,19 @@ public class MarvelControlador {
         }
     }
 
-
     private void registrarParticipacion() {
     }
 
     private void cambiarTraje() {
+        vista.mensaje("Vas a cambiar el Traje de un personaje.");
+        while (true) {
+            vista.mostrarPersonajes(personajeDAO.buscarTodosLosPersonajes(), false);
+            String nombrePersonaje = vista.solicitarEntrada("Introduce el nombre del personaje: ");
+            int idPersonaje = (personajeDAO.buscarPersonajePorNombre(nombrePersonaje).getId());
+            Traje traje = seleccionarTraje();
+            personajeServicio.cambiarTraje(idPersonaje, traje);
+            vista.mensaje("Traje cambiado correctamente.");
+        }
     }
 
     private void mostrarDatosPersonaje() {
@@ -336,7 +348,7 @@ public class MarvelControlador {
         List<Traje> disponibles = trajeDAO.buscarDisponibles();
         vista.mostrarTrajesDisponibles(disponibles);
 
-        int opcion = solicitarInt("Elige ID de traje: ", 0, Integer.MAX_VALUE, true);
+        int opcion = solicitarInt("Elige una opción: ", 0, Integer.MAX_VALUE, true);
 
         if (opcion == -1) {
             return null;
@@ -345,12 +357,16 @@ public class MarvelControlador {
         if (opcion == 0) {
             String especificacion = vista.solicitarEntrada("Especificación del nuevo traje: ");
 
-            Traje nuevoTraje = new Traje();
-            nuevoTraje.setEspecificacion(especificacion);
+            Traje nuevoTraje = trajeServicio.crearTraje(especificacion);
             return nuevoTraje;
         }
 
-        Traje traje = trajeDAO.buscarPorId(opcion);
+        int idTraje = 0;
+        if (opcion == 1) {
+            int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, Integer.MAX_VALUE, false);
+            idTraje = disponibles.get(seleccion).getId();
+        }
+        Traje traje = trajeDAO.buscarPorId(idTraje);
         if (traje == null || traje.getPersonaje() != null) {
             vista.mensaje("Traje no válido.");
             return null;
