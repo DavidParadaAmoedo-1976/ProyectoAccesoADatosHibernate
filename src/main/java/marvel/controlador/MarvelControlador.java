@@ -297,6 +297,19 @@ public class MarvelControlador {
     }
 
     private void MostrarPersonajesPorHabilidad() {
+        List<Habilidad> habilidades = habilidadDAO.buscarTodasLasHabilidades();
+        vista.mostrarHabilidades(habilidades, false);
+        String nombreHabilidad;
+        while (true) {
+            try {
+                nombreHabilidad = vista.solicitarEntrada("Nombre de la habilidad: ").trim();
+                long total = personajeServicio.contarPersonajesPorHabilidad(nombreHabilidad);
+                vista.mensaje("Número de personajes con la habilidad " + nombreHabilidad + ": " + total);
+                return;
+            } catch (IllegalArgumentException e) {
+                vista.mensajeError(e.getMessage());
+            }
+    }
     }
 
     private int solicitarInt(String mensaje, int min, int max, boolean permitirNulo) {

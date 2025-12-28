@@ -60,4 +60,25 @@ public class PersonajeDAO {
         return personaje;
     }
 
+    // Caso complejo: SÍ necesito habilidades
+    public Personaje buscarPorNombreConHabilidades(String nombre) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Personaje p = session.createQuery(
+                        "SELECT p FROM Personaje p LEFT JOIN FETCH p.habilidades WHERE lower(p.nombre)=:nombre",
+                        Personaje.class
+                ).setParameter("nombre", nombre.toLowerCase())
+                .uniqueResult();
+        session.close();
+        return p;
+    }
+
+    public long contarPersonajesPorHabilidad(String nombreHabilidad) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Long total = session.createQuery("SELECT COUNT(p) FROM Personaje p JOIN p.habilidades h WHERE lower(h.nombre) = :nombre",
+                        Long.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
+
+        session.close();
+        return total != null ? total : 0;
+    }
 }
