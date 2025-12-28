@@ -96,26 +96,39 @@ public class MarvelControlador {
     private void borrarPersonaje() {
 
         List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
-        vista.mensaje("Has seleccionado la opcion de borrar personaje");
-        vista.mostrarPersonajes(personajes, true);
-        vista.mensaje("0.- Volver al menu anterior");
+        vista.mensaje("Has seleccionado la opción de borrar personaje");
+
         if (personajes.isEmpty()) {
             vista.mensaje("No hay personajes registrados.");
             return;
         }
 
-        int id = solicitarInt("Selecciona el personaje a borrar: ", 0, personajes.size(), false);
-        if (id == 0) return;
-        Personaje personaje = personajes.get(id - 1);
+        while (true) {
+            vista.mostrarPersonajes(personajes, true);
+            vista.mensaje("0.- Volver al menú anterior");
 
-        if (personaje.getTraje() != null) {
-            personaje.getTraje().setPersonaje(null);
-            personaje.setTraje(null);
+            int id = solicitarInt("Selecciona el personaje a borrar: ", 0, personajes.size(), false);
+            if (id == 0) return;
+
+            Personaje personaje = personajes.get(id - 1);
+
+            if (personaje.getTraje() != null) {
+                personaje.getTraje().setPersonaje(null);
+                personaje.setTraje(null);
+            }
+
+            personajeDAO.borrarPersonaje(personaje);
+            vista.mensaje("Personaje borrado correctamente.");
+
+            personajes = personajeDAO.buscarTodosLosPersonajes();
+
+            if (personajes.isEmpty()) {
+                vista.mensaje("No hay más personajes registrados.");
+                return;
+            }
         }
-
-        personajeDAO.borrarPersonaje(personaje);
-        vista.mensaje("Personaje borrado correctamente.");
     }
+
 
 
     private void modificarPersonaje() {
@@ -292,13 +305,32 @@ public class MarvelControlador {
 
     private void cambiarTraje() {
         vista.mensaje("Vas a cambiar el Traje de un personaje.");
+        List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
+        if (personajes.isEmpty()) {
+            vista.mensaje("No hay personajes registrados.");
+            return;
+        }
+
         while (true) {
-            vista.mostrarPersonajes(personajeDAO.buscarTodosLosPersonajes(), false);
-            String nombrePersonaje = vista.solicitarEntrada("Introduce el nombre del personaje: ");
-            int idPersonaje = (personajeDAO.buscarPersonajePorNombre(nombrePersonaje).getId());
-            Traje traje = seleccionarTraje();
-            personajeServicio.cambiarTraje(idPersonaje, traje);
+            vista.mostrarPersonajes(personajes, false);
+
+            String nombrePersonaje = vista.solicitarEntrada(
+                    "Introduce el nombre del personaje (0 para salir): "
+            );
+
+            if (nombrePersonaje.equals("0")) return;
+
+            Personaje personaje = personajeDAO.buscarPersonajePorNombre(nombrePersonaje);
+            if (personaje == null) {
+                vista.mensajeError("Personaje no encontrado.");
+                continue;
+            }
+
+            Traje traje = seleccionarTraje(); // puede devolver null
+            personajeServicio.cambiarTraje(personaje.getId(), traje);
+
             vista.mensaje("Traje cambiado correctamente.");
+            return;
         }
     }
 
@@ -321,7 +353,7 @@ public class MarvelControlador {
             } catch (IllegalArgumentException e) {
                 vista.mensajeError(e.getMessage());
             }
-    }
+        }
     }
 
     private int solicitarInt(String mensaje, int min, int max, boolean permitirNulo) {
