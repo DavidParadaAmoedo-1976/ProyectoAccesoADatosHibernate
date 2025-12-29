@@ -4,9 +4,7 @@ import marvel.controlador.MarvelControlador;
 import marvel.modelo.dao.*;
 import marvel.modelo.entidades.Traje;
 import marvel.modelo.util.HibernateUtil;
-import marvel.servicios.HabilidadServicio;
-import marvel.servicios.PersonajeServicio;
-import marvel.servicios.TrajeServicio;
+import marvel.servicios.*;
 import marvel.vista.MarvelVista;
 
 public class Programa {
@@ -26,16 +24,17 @@ public class Programa {
         PersonajeServicio personajeServicio = new PersonajeServicio(personajeDAO, trajeDAO, habilidadDAO);
         HabilidadServicio habilidadServicio = new HabilidadServicio(habilidadDAO);
         TrajeServicio trajeServicio = new TrajeServicio(trajeDAO);
+        EventoServicio eventoServicio = new EventoServicio();
+        ParticipaServicio participaServicio = new ParticipaServicio();
 
         MarvelControlador controlador = new MarvelControlador(
                 vista,
                 personajeServicio,
                 habilidadServicio,
                 trajeServicio,
-                trajeDAO,
-                personajeDAO,
-                habilidadDAO,
-                eventoDAO);
+                eventoServicio,
+                participaServicio
+        );
 
         controlador.ejecuta();
     }

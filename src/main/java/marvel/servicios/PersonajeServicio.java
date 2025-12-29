@@ -8,6 +8,9 @@ import marvel.modelo.entidades.Habilidad;
 import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PersonajeServicio {
 
@@ -36,6 +39,19 @@ public class PersonajeServicio {
 
         personajeDAO.guardarPersonaje(personaje);
     }
+
+    public void borrarPersonaje(int id) {
+        Personaje personaje = personajeDAO.buscarPersonajePorId(id);
+        if (personaje == null) {
+            throw new IllegalArgumentException("Personaje no encontrado.");
+        }
+        if (personaje.getTraje() != null) {
+            personaje.getTraje().setPersonaje(null);
+            personaje.setTraje(null);
+        }
+        personajeDAO.borrarPersonaje(personaje);
+    }
+
 
     public void cambiarNombre(int idPersonaje, String nuevoNombre) {
 
@@ -77,6 +93,14 @@ public class PersonajeServicio {
         personajeDAO.actualizarPersonaje(personaje);
     }
 
+    public List<Personaje> buscarTodosLosPersonajes() {
+        List<Personaje> personajes = personajeDAO.buscarTodosLosPersonajes();
+        if (personajes == null) {
+            throw new IllegalArgumentException("No hay personajes en la lista.");
+        }
+        return personajes;
+    }
+
 
     public Personaje buscarPorId(int idPersonaje) {
         Personaje personaje = personajeDAO.buscarPersonajePorId(idPersonaje);
@@ -86,7 +110,7 @@ public class PersonajeServicio {
         return personaje;
     }
 
-    public Personaje buscarPorNombre(String nombre) {
+    public Personaje buscarPersonajePorNombre(String nombre) {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
@@ -136,6 +160,7 @@ public class PersonajeServicio {
 
         return personajeDAO.contarPersonajesPorHabilidad(nombreHabilidad);
     }
+
 
 }
 

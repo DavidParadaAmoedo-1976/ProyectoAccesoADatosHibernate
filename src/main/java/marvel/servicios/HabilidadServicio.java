@@ -4,6 +4,8 @@ import marvel.modelo.dao.GenericDAO;
 import marvel.modelo.dao.HabilidadDAO;
 import marvel.modelo.entidades.Habilidad;
 
+import java.util.List;
+
 public class HabilidadServicio {
     private final HabilidadDAO habilidadDAO;
 
@@ -21,6 +23,14 @@ public class HabilidadServicio {
         habilidad.setDescripcion(descripcion);
 
         habilidadDAO.guardarHabilidades(habilidad);
+    }
+
+    public void borrarHabilidad(Habilidad habilidad) {
+        habilidadDAO.borrarHabilidad(habilidad);
+    }
+
+    public List<Habilidad> buscarTodasLasHabilidades() {
+        return habilidadDAO.buscarTodasLasHabilidades();
     }
 
     public Habilidad buscarPorNombre(String nombre) {
@@ -57,4 +67,6 @@ public class HabilidadServicio {
         habilidad.setDescripcion(nuevaDescripcion);
         habilidadDAO.actualizarHabilidad(habilidad);
     }
+
+
 }

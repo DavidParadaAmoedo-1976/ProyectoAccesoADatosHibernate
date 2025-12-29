@@ -24,7 +24,7 @@ public class TrajeDAO {
         return traje;
     }
 
-    public List<Traje> buscarDisponibles() {
+    public List<Traje> buscarTrajesDisponibles() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         List<Traje> lista = session.createQuery(
                 "FROM Traje traje WHERE traje.personaje IS NULL", Traje.class).list();

@@ -1,5 +1,6 @@
 package marvel.vista;
 
+import marvel.modelo.entidades.Evento;
 import marvel.modelo.entidades.Habilidad;
 import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
@@ -63,12 +64,8 @@ public class MarvelVista {
     public void mostrarTrajesDisponibles(List<Traje> trajes) {
         System.out.println("Trajes disponibles:");
 
-        if (trajes.isEmpty()) {
-            mensajeError("(No hay trajes disponibles)");
-        } else {
-            for (Traje traje : trajes) {
-                System.out.println(traje.getId() + " .- " + traje.getEspecificacion());
-            }
+        for (Traje traje : trajes) {
+            System.out.println(traje.getId() + " .- " + traje.getEspecificacion());
         }
         System.out.println("0.- Crear traje nuevo");
         System.out.println("1.- Seleccionar un traje");
@@ -92,6 +89,22 @@ public class MarvelVista {
         for (Habilidad habilidad : habilidades) {
             System.out.println((id ? (cont + ".- ") : "") + habilidad.getNombre() + " -> " + habilidad.getDescripcion());
             cont++;
+        }
+    }
+
+    public void mostrarMenuEventos() {
+        System.out.println("""
+                    Menu de opciones
+        1.- Crear evento nuevo.
+        2.- Seleccionar un evento.
+        0.- Salir al menú principal.
+        """);
+    }
+
+    public void mostrarEventos(List<Evento> eventos) {
+        System.out.println("Lista de eventos\n");
+        for (Evento evento : eventos) {
+            System.out.println(evento.getNombre() + "\t->" + evento.getLugar());
         }
     }
 }

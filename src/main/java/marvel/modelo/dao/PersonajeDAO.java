@@ -60,7 +60,6 @@ public class PersonajeDAO {
         return personaje;
     }
 
-    // Caso complejo: SÍ necesito habilidades
     public Personaje buscarPorNombreConHabilidades(String nombre) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Personaje p = session.createQuery(
