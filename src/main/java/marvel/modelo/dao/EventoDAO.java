@@ -1,7 +1,6 @@
 package marvel.modelo.dao;
 
 import marvel.modelo.entidades.Evento;
-import marvel.modelo.entidades.Personaje;
 import marvel.modelo.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -31,8 +30,8 @@ public class EventoDAO {
     public Evento buscarEventoPorNombre(String nombreEvento) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Evento evento = session
-                .createQuery("FROM Evento e WHERE lower(e.nombre) =: nombre",Evento.class)
-                .setParameter("nombre",nombreEvento.toLowerCase()).uniqueResult();
+                .createQuery("FROM Evento e WHERE lower(e.nombre) =: nombre", Evento.class)
+                .setParameter("nombre", nombreEvento.toLowerCase()).uniqueResult();
         session.close();
         return evento;
     }

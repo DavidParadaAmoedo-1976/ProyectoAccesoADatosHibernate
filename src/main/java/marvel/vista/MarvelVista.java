@@ -94,11 +94,11 @@ public class MarvelVista {
 
     public void mostrarMenuEventos() {
         System.out.println("""
-                    Menu de opciones
-        1.- Crear evento nuevo.
-        2.- Seleccionar un evento.
-        0.- Salir al menú principal.
-        """);
+                            Menu de opciones
+                1.- Crear evento nuevo.
+                2.- Seleccionar un evento.
+                0.- Salir al menú principal.
+                """);
     }
 
     public void mostrarEventos(List<Evento> eventos) {

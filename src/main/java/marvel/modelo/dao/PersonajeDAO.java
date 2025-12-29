@@ -75,7 +75,7 @@ public class PersonajeDAO {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         Long total = session.createQuery("SELECT COUNT(p) FROM Personaje p JOIN p.habilidades h WHERE lower(h.nombre) = :nombre",
-                        Long.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
+                Long.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
 
         session.close();
         return total != null ? total : 0;

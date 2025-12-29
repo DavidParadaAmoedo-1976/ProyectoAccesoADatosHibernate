@@ -8,7 +8,6 @@ import marvel.modelo.entidades.Habilidad;
 import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,6 +22,7 @@ public class PersonajeServicio {
         this.trajeDAO = trajeDAO;
         this.habilidadDAO = habilidadDAO;
     }
+
     public void crearPersonaje(String nombre, String alias, Traje traje) {
 
         int idPersonaje = GenericDAO.siguienteId(Personaje.class, "id");

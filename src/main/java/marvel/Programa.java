@@ -2,7 +2,6 @@ package marvel;
 
 import marvel.controlador.MarvelControlador;
 import marvel.modelo.dao.*;
-import marvel.modelo.entidades.Traje;
 import marvel.modelo.util.HibernateUtil;
 import marvel.servicios.*;
 import marvel.vista.MarvelVista;

@@ -14,12 +14,12 @@ public class TrajeServicio {
     }
 
     public Traje crearTraje(String especificacion) {
-        int idTraje = GenericDAO.siguienteId(Traje.class,"id");
-        
+        int idTraje = GenericDAO.siguienteId(Traje.class, "id");
+
         Traje traje = new Traje();
         traje.setId(idTraje);
         traje.setEspecificacion(especificacion);
-        
+
         trajeDAO.guardar(traje);
         return traje;
     }

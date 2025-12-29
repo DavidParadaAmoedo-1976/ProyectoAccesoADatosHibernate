@@ -20,14 +20,14 @@ public class EventoServicio {
 
     public List<Evento> buscarTodosLosEventos() {
         List<Evento> eventos = eventoDAO.buscarTodosLosEventos();
-        if (eventos == null) {
-            throw new RuntimeException("No se encontraron eventos");
+        if (eventos.isEmpty()) {
+            throw new IllegalArgumentException("No se encontraron eventos");
         }
         return eventos;
     }
 
     public void crearEvento(String nombreEvento, String lugarEvento) {
-        int idEvento = GenericDAO.siguienteId(Evento.class,"id");
+        int idEvento = GenericDAO.siguienteId(Evento.class, "id");
         Evento evento = new Evento();
         evento.setId(idEvento);
         evento.setNombre(nombreEvento);

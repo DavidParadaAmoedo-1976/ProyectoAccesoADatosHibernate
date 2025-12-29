@@ -157,7 +157,6 @@ public class MarvelControlador {
         }
     }
 
-
     private void crearHabilidad() {
         try {
             String nombre = vista.solicitarEntrada("Nombre de la Habilidad: ");
@@ -257,22 +256,17 @@ public class MarvelControlador {
     }
 
     private void registrarParticipacion() {
-
         vista.mensaje("Vas a registrar una participación de un personaje en un evento.");
-
         Evento evento = null;
-        Personaje personaje = null;
-        LocalDate fecha = null;
-        String rol = null;
-
+        Personaje personaje;
+        LocalDate fecha;
+        String rol;
         while (true) {
             // Selección o creación del evento
             vista.mensaje("Selección de evento:");
             vista.mostrarMenuEventos();
             int opcionEvento = solicitarInt("Seleccione una opción: ", 0, 2, false);
-
             switch (opcionEvento) {
-
                 case 1 -> {
                     String nombreEvento = vista.solicitarEntrada("Introduce el nombre del evento: ");
                     String lugarEvento = vista.solicitarEntrada("Introduce el lugar del evento: ");
@@ -295,7 +289,6 @@ public class MarvelControlador {
                     return;
                 }
             }
-
             vista.mensaje("Selección de personaje:");
             List<Personaje> personajes = personajeServicio.buscarTodosLosPersonajes();
             vista.mostrarPersonajes(personajes, false);
@@ -306,11 +299,8 @@ public class MarvelControlador {
                 vista.mensajeError(e.getMessage());
                 continue; // vuelve a pedir el personaje
             }
-
             fecha = solicitarFecha();
             rol = vista.solicitarEntrada("Introduce el rol del personaje: ");
-
-
             try {
                 participaServicio.crearParticipa(evento, personaje, fecha, rol);
                 vista.mensaje("Participación registrada correctamente.");
@@ -325,7 +315,6 @@ public class MarvelControlador {
         int dia = solicitarInt("Introduce el día del evento: ", 1, 31, false);
         int mes = solicitarInt("Introduce el mes del evento en número: ", 1, 12, false);
         int anio = solicitarInt("Introduce el año del evento: ", 1, 2050, false);
-
         try {
             return LocalDate.of(anio, mes, dia);
         } catch (DateTimeException e) {
@@ -333,7 +322,6 @@ public class MarvelControlador {
             return solicitarFecha();
         }
     }
-
 
     private void cambiarTraje() {
         vista.mensaje("Vas a cambiar el Traje de un personaje.");
@@ -401,34 +389,30 @@ public class MarvelControlador {
 
     private Traje seleccionarTraje() {
         List<Traje> disponibles = trajeServicio.buscarTrajesDisponibles();
-            if (disponibles.isEmpty()) {
-                vista.mensaje("No hay trajes disponibles.");
-            }
-            vista.mostrarTrajesDisponibles(disponibles);
-
-            int opcion = solicitarInt("Elige una opción: ", 0, Integer.MAX_VALUE, true);
-            if (opcion == -1) {
-                return null;
-            }
-            if (opcion == 0) {
-                String especificacion = vista.solicitarEntrada("Especificación del nuevo traje: ");
-
-                Traje nuevoTraje = trajeServicio.crearTraje(especificacion);
-                return nuevoTraje;
-            }
-            int idTraje = 0;
-            if (opcion == 1) {
-                vista.mostrarTrajesDisponibles(disponibles);
-                int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, Integer.MAX_VALUE, false);
-                idTraje = disponibles.get(seleccion).getId();
-            }
-            Traje traje = null;
-            try {
-                traje = trajeServicio.buscarTrajePorId(idTraje);
-            } catch (IllegalArgumentException e) {
-                vista.mensajeError(e.getMessage());
-            }
-
-            return traje;
+        if (disponibles.isEmpty()) {
+            vista.mensaje("No hay trajes disponibles.");
         }
+        vista.mostrarTrajesDisponibles(disponibles);
+        int opcion = solicitarInt("Elige una opción: ", 0, Integer.MAX_VALUE, true);
+        if (opcion == -1) {
+            return null;
+        }
+        if (opcion == 0) {
+            String especificacion = vista.solicitarEntrada("Especificación del nuevo traje: ");
+            return trajeServicio.crearTraje(especificacion);
+        }
+        int idTraje = 0;
+        if (opcion == 1) {
+            vista.mostrarTrajesDisponibles(disponibles);
+            int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, Integer.MAX_VALUE, false);
+            idTraje = disponibles.get(seleccion).getId();
+        }
+        Traje traje = null;
+        try {
+            traje = trajeServicio.buscarTrajePorId(idTraje);
+        } catch (IllegalArgumentException e) {
+            vista.mensajeError(e.getMessage());
+        }
+        return traje;
     }
+}
