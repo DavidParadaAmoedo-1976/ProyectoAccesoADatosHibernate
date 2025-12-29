@@ -6,6 +6,8 @@ import marvel.modelo.entidades.Participa;
 import marvel.modelo.entidades.Personaje;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParticipaServicio {
 
@@ -31,5 +33,13 @@ public class ParticipaServicio {
         participa.setRol(rol);
 
         participaDAO.guardarParticipa(participa);
+    }
+
+    public List<Personaje> buscarPersonajesDeUnEvento(Evento evento) {
+        List<Personaje> personajes = participaDAO.buscarPersonajesDeUnEvento(evento);
+        if (personajes.isEmpty()){
+            throw new IllegalArgumentException("No hay personajes en ese evento");
+        }
+        return personajes;
     }
 }

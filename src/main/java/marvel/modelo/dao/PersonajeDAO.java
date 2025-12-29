@@ -80,4 +80,24 @@ public class PersonajeDAO {
         session.close();
         return total != null ? total : 0;
     }
+
+    public Personaje buscarPorNombreConTodo(String nombre) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        Personaje personaje = session.createQuery(
+                        "SELECT DISTINCT p FROM Personaje p " +
+                                "LEFT JOIN FETCH p.traje " +
+                                "LEFT JOIN FETCH p.habilidades " +
+                                "LEFT JOIN FETCH p.participaciones part " +
+                                "LEFT JOIN FETCH part.evento " +
+                                "WHERE lower(p.nombre) = :nombre",
+                        Personaje.class
+                )
+                .setParameter("nombre", nombre.toLowerCase())
+                .uniqueResult();
+
+        session.close();
+        return personaje;
+    }
+
 }

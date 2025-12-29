@@ -161,6 +161,13 @@ public class PersonajeServicio {
         return personajeDAO.contarPersonajesPorHabilidad(nombreHabilidad);
     }
 
+    public Personaje obtenerPersonajeConDatos(String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío");
+        }
+
+        return personajeDAO.buscarPorNombreConTodo(nombre);
+    }
 
 }
 

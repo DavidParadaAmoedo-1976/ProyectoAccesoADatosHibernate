@@ -275,7 +275,7 @@ public class MarvelControlador {
                 }
                 case 2 -> {
                     List<Evento> eventos = eventoServicio.buscarTodosLosEventos();
-                    vista.mostrarEventos(eventos);
+                    vista.mostrarEventos(eventos,false);
                     String nombreEvento = vista.solicitarEntrada("Introduce el nombre del evento: ");
                     try {
                         evento = eventoServicio.buscarEventoPorNombre(nombreEvento);
@@ -284,7 +284,7 @@ public class MarvelControlador {
                         continue;
                     }
                 }
-                case 0 -> { // Volver al menú principal
+                case 0 -> {
                     vista.mensaje("Volviendo al menú principal.");
                     return;
                 }
@@ -347,9 +347,40 @@ public class MarvelControlador {
     }
 
     private void mostrarDatosPersonaje() {
+        List<Personaje> personajes = personajeServicio.buscarTodosLosPersonajes();
+        if (personajes.isEmpty()) {
+            vista.mensaje("No hay personajes registrados.");
+            return;
+        }
+
+        vista.mostrarPersonajes(personajes, true);
+        int id = solicitarInt("Introduce el número del personaje, o 0 para volver al menú principal: ",0, personajes.size(),false);
+
+        if (id == 0) return;
+
+        try {
+            Personaje personaje = personajeServicio.buscarPorId(personajes.get(id - 1).getId());
+            vista.mostrarDatosPersonaje(personaje);
+        } catch (IllegalArgumentException e) {
+            vista.mensajeError(e.getMessage());
+        }
     }
 
+
     private void mostrarPersonajesEvento() {
+        List<Evento> eventos = eventoServicio.buscarTodosLosEventos();
+        if (eventos.isEmpty()) {
+            vista.mensaje("No hay eventos registrados.");
+            return;
+        }
+
+        vista.mostrarEventos(eventos, true);
+        int id = solicitarInt("Introduce el número del evento pa ra consultar que personajes participarón " +
+                "\n o pulsa 0 para volver al menu principal: ", 0 , eventos.size(),false);
+        if (id == 0) return;
+        List<Personaje> personajes = participaServicio.buscarPersonajesDeUnEvento(eventos.get(id-1));
+        vista.mensaje("Has solicitado ver los personajes que oparticipan en el evento.- " + eventos.get(id-1).getNombre());
+        vista.mostrarPersonajesDeUnEvento(personajes);
     }
 
     private void MostrarPersonajesPorHabilidad() {

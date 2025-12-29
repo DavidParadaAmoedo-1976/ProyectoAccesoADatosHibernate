@@ -1,9 +1,6 @@
 package marvel.vista;
 
-import marvel.modelo.entidades.Evento;
-import marvel.modelo.entidades.Habilidad;
-import marvel.modelo.entidades.Personaje;
-import marvel.modelo.entidades.Traje;
+import marvel.modelo.entidades.*;
 import marvel.modelo.enums.EstilosEnum;
 import marvel.modelo.enums.MenuEnum;
 import marvel.modelo.enums.ModificarHabilidadEnum;
@@ -72,22 +69,22 @@ public class MarvelVista {
         System.out.println("Deja vacío si no quieres seleccionar traje.");
     }
 
-    public void mostrarPersonajes(List<Personaje> personajes, boolean id) {
+    public void mostrarPersonajes(List<Personaje> personajes, boolean mostrarId) {
         System.out.println("Personajes existentes:");
         int cont = 1;
         for (Personaje personaje : personajes) {
-            System.out.println((id ? (cont + ".- ") : "") + personaje.getNombre() + " (" + personaje.getAlias() + ")");
+            System.out.println((mostrarId ? (cont + ".- ") : "") + personaje.getNombre() + " (" + personaje.getAlias() + ")");
             cont++;
         }
     }
 
 
-    public void mostrarHabilidades(List<Habilidad> habilidades, boolean id) {
+    public void mostrarHabilidades(List<Habilidad> habilidades, boolean mostrarId) {
         System.out.println("Lista de Habilidades.");
 
         int cont = 1;
         for (Habilidad habilidad : habilidades) {
-            System.out.println((id ? (cont + ".- ") : "") + habilidad.getNombre() + " -> " + habilidad.getDescripcion());
+            System.out.println((mostrarId ? (cont + ".- ") : "") + habilidad.getNombre() + " -> " + habilidad.getDescripcion());
             cont++;
         }
     }
@@ -101,10 +98,64 @@ public class MarvelVista {
                 """);
     }
 
-    public void mostrarEventos(List<Evento> eventos) {
+    public void mostrarEventos(List<Evento> eventos, boolean mostrarId) {
         System.out.println("Lista de eventos\n");
+        int cont = 1;
         for (Evento evento : eventos) {
-            System.out.println(evento.getNombre() + "\t->" + evento.getLugar());
+            System.out.println((mostrarId ? (cont + ".- ") : "") + evento.getNombre() + "\t->" + evento.getLugar());
+        }
+    }
+
+    public void mostrarDatosPersonaje(Personaje personaje) {
+
+        System.out.println();
+        System.out.println("=================================");
+        System.out.println("   DATOS DEL PERSONAJE");
+        System.out.println("=================================");
+
+        System.out.println("Nombre: " + personaje.getNombre());
+        System.out.println("Alias: " + personaje.getAlias());
+
+        // Traje
+        System.out.print("Traje: ");
+        if (personaje.getTraje() != null) {
+            System.out.println(personaje.getTraje().getEspecificacion());
+        } else {
+            System.out.println("Sin traje");
+        }
+
+        // Habilidades
+        System.out.println("\nHabilidades:");
+        if (personaje.getHabilidades() == null || personaje.getHabilidades().isEmpty()) {
+            System.out.println("- No tiene habilidades asignadas");
+        } else {
+            for (Habilidad h : personaje.getHabilidades()) {
+                System.out.println("- " + h.getNombre());
+            }
+        }
+
+        if (personaje.getParticipaciones() != null) {
+            System.out.println("\nEventos:");
+            if (personaje.getParticipaciones().isEmpty()) {
+                System.out.println("- No participa en ningún evento");
+            } else {
+                for (Participa p : personaje.getParticipaciones()) {
+                    System.out.println("- "
+                            + p.getEvento().getNombre()
+                            + " | Rol: " + p.getRol()
+                            + " | Fecha: " + p.getFecha());
+                }
+            }
+        }
+
+        System.out.println("=================================");
+        System.out.println();
+    }
+
+    public void mostrarPersonajesDeUnEvento(List<Personaje> personajes) {
+        System.out.println("En este evento participaron:");
+        for (Personaje personaje: personajes){
+            System.out.println("- " + personaje.getNombre());
         }
     }
 }
