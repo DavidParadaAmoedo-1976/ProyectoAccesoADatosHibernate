@@ -45,10 +45,6 @@ public class MarvelVista {
         return sc.nextLine().trim();
     }
 
-    public void mostrarSalida() {
-        System.out.println("Saliendo del programa...");
-    }
-
     public void mensajeError(String mensaje) {
         System.out.println(EstilosEnum.ROJO.getFormato() + mensaje + EstilosEnum.RESET.getFormato());
     }
@@ -64,6 +60,9 @@ public class MarvelVista {
         for (Traje traje : trajes) {
             System.out.println(traje.getId() + " .- " + traje.getEspecificacion());
         }
+    }
+
+    public void menuSeleccionarTraje() {
         System.out.println("0.- Crear traje nuevo");
         System.out.println("1.- Seleccionar un traje");
         System.out.println("Deja vacío si no quieres seleccionar traje.");
@@ -103,53 +102,64 @@ public class MarvelVista {
         int cont = 1;
         for (Evento evento : eventos) {
             System.out.println((mostrarId ? (cont + ".- ") : "") + evento.getNombre() + "\t->" + evento.getLugar());
+            cont++;
         }
     }
 
     public void mostrarDatosPersonaje(Personaje personaje) {
 
-        System.out.println();
-        System.out.println("=================================");
-        System.out.println("   DATOS DEL PERSONAJE");
-        System.out.println("=================================");
+        System.out.print("\t".repeat(5) + " \u250C" + "\u2500".repeat(79) + "\u2510");
+        System.out.printf("\n" + "\t".repeat(5) + " \u2502" + EstilosEnum.AMARILLO.getFormato() + " %-77s " + EstilosEnum.RESET.getFormato() + "\u2502", "                             DATOS DEL PERSONAJE");
+        System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(15)+ "\u252C" + "\u2500".repeat(63) +  "\u2524");
 
-        System.out.println("Nombre: " + personaje.getNombre());
-        System.out.println("Alias: " + personaje.getAlias());
 
-        // Traje
-        System.out.print("Traje: ");
+        System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502", "Nombre: ", personaje.getNombre());
+        System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502","Alias: ", personaje.getAlias());
+
         if (personaje.getTraje() != null) {
-            System.out.println(personaje.getTraje().getEspecificacion());
+            System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502","Traje: ",personaje.getTraje().getEspecificacion());
         } else {
-            System.out.println("Sin traje");
+            System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502","Traje: ","Ningún traje asignado");
         }
 
+        System.out.printf("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(15) + "\u2534" + "\u2500".repeat(63) + "\u2524");
+        System.out.printf("\n" + "\t".repeat(5) + " \u2502" + EstilosEnum.AMARILLO.getFormato() + " %-77s " + EstilosEnum.RESET.getFormato() + "\u2502", "                           HABILIDADES");
+        System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(79) +  "\u2524");
         // Habilidades
-        System.out.println("\nHabilidades:");
         if (personaje.getHabilidades() == null || personaje.getHabilidades().isEmpty()) {
-            System.out.println("- No tiene habilidades asignadas");
+            System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-77s \u2502", "No tiene habilidades asignadas");
         } else {
             for (Habilidad h : personaje.getHabilidades()) {
-                System.out.println("- " + h.getNombre());
+                System.out.printf("\n"+"\t".repeat(5) + " \u2502 %2s %-74s \u2502","- ",  h.getNombre());
             }
         }
-
+        System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(79) +  "\u2524");
+        System.out.printf("\n" + "\t".repeat(5) + " \u2502" + EstilosEnum.AMARILLO.getFormato() + " %-77s " + EstilosEnum.RESET.getFormato() + "\u2502", "                             EVENTOS");
         if (personaje.getParticipaciones() != null) {
-            System.out.println("\nEventos:");
+
             if (personaje.getParticipaciones().isEmpty()) {
-                System.out.println("- No participa en ningún evento");
+                System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(79) +  "\u2524");
+                System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-77s \u2502", "No participó en ningún evento");
+                System.out.print("\n" + "\t".repeat(5) + " \u2514" + "\u2500".repeat(79) +  "\u2518");
+                esperarIntro();
             } else {
+                System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(30)+ "\u252C" + "\u2500".repeat(35) + "\u252C" + "\u2500".repeat(12)  +  "\u2524");
+                System.out.printf("\n" + "\t".repeat(5) + " \u2502"
+                                + EstilosEnum.NARANJA.getFormato() + " %-28s " + EstilosEnum.RESET.getFormato() + "\u2502"
+                                + EstilosEnum.NARANJA.getFormato() + " %-33s " + EstilosEnum.RESET.getFormato() + "\u2502"
+                                + EstilosEnum.NARANJA.getFormato() + " %-10s " + EstilosEnum.RESET.getFormato() + "\u2502"
+                        , "Nombre del Evento", "Rol en el Evento", " FECHA");
+                System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(30)+ "\u253C" + "\u2500".repeat(35) + "\u253C" + "\u2500".repeat(12)  +  "\u2524");
+
                 for (Participa p : personaje.getParticipaciones()) {
-                    System.out.println("- "
-                            + p.getEvento().getNombre()
-                            + " | Rol: " + p.getRol()
-                            + " | Fecha: " + p.getFecha());
+                    System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-28s \u2502 %-33s \u2502 %10s \u2502 "
+                            , p.getEvento().getNombre(), p.getRol(), p.getFecha());
                 }
+                System.out.print("\n" + "\t".repeat(5) + " \u2514" + "\u2500".repeat(30)+ "\u2534" + "\u2500".repeat(35) + "\u2534" + "\u2500".repeat(12)  +  "\u2518");
+                esperarIntro();
             }
         }
 
-        System.out.println("=================================");
-        System.out.println();
     }
 
     public void mostrarPersonajesDeUnEvento(List<Personaje> personajes) {
@@ -157,5 +167,12 @@ public class MarvelVista {
         for (Personaje personaje: personajes){
             System.out.println("- " + personaje.getNombre());
         }
+        esperarIntro();
+    }
+
+    private void esperarIntro() {
+        System.out.println("\npulsa intro para volver al menú");
+        sc.nextLine();
+        System.out.println("\n".repeat(50));
     }
 }

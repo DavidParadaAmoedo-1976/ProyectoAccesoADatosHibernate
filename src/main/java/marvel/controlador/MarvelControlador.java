@@ -58,7 +58,7 @@ public class MarvelControlador {
                 case CAMBIAR_TRAJE -> cambiarTraje();
                 case MOSTRAR_PERSONAJE -> mostrarDatosPersonaje();
                 case MOSTRAR_PERSONAJES_EVENTO -> mostrarPersonajesEvento();
-                case CONTAR_POR_HABILIDAD -> MostrarPersonajesPorHabilidad();
+                case CONTAR_POR_HABILIDAD -> mostrarPersonajesPorHabilidad();
                 case SALIR -> {
                     vista.mensaje("Saliendo del programa ....");
                     cerrarAplicacion();
@@ -170,10 +170,11 @@ public class MarvelControlador {
 
     private void borrarHabilidad() {
         List<Habilidad> habilidades = habilidadServicio.buscarTodasLasHabilidades();
-        vista.mostrarHabilidades(habilidades, false);
         if (habilidades.isEmpty()) {
+            vista.mensaje("No hay habilidades registradas.");
             return;
         }
+        vista.mostrarHabilidades(habilidades, false);
         while (true) {
             vista.mensaje("\nVas a borrar una habilidad.");
             vista.mensaje("Escribe 0 para volver al menú.");
@@ -196,14 +197,15 @@ public class MarvelControlador {
         List<Habilidad> habilidades = habilidadServicio.buscarTodasLasHabilidades();
         vista.mensaje("Vas a modificar una habilidad.");
         vista.mostrarHabilidades(habilidades, true);
-        vista.mensaje("0.- Volver al menu anterior");
+        vista.mensaje("0.- Volver al menú anterior");
         if (habilidades.isEmpty()) {
             vista.mensaje("No hay habilidades para modificar.");
+            return;
         }
-        int id = solicitarInt("Seleccione una habilidad: ", 0, habilidades.size() - 1, false);
+        int id = solicitarInt("Seleccione una habilidad: ", 1, habilidades.size(), false);
         Habilidad habilidad = habilidades.get(id - 1);
         String nombreHabilidad = habilidad.getNombre();
-        vista.mensaje("Has selecionado la habilidad: " + habilidad.getNombre());
+        vista.mensaje("Has seleccionado la habilidad: " + habilidad.getNombre());
         ModificarHabilidadEnum opcion;
         while (true) {
             vista.mostrarMenuModificarHabilidad();
@@ -219,7 +221,7 @@ public class MarvelControlador {
                 case DESCRIPCION: {
                     String nuevaDescripcion = vista.solicitarEntrada("Nueva descripción para la habilidad: ");
                     habilidadServicio.cambiarDescripcion(nombreHabilidad, nuevaDescripcion);
-                    vista.mensaje("Descripcion de la habilidad cambiada correctamente.");
+                    vista.mensaje("Descripción de la habilidad cambiada correctamente.");
                     break;
                 }
                 case SALIR: {
@@ -262,7 +264,6 @@ public class MarvelControlador {
         LocalDate fecha;
         String rol;
         while (true) {
-            // Selección o creación del evento
             vista.mensaje("Selección de evento:");
             vista.mostrarMenuEventos();
             int opcionEvento = solicitarInt("Seleccione una opción: ", 0, 2, false);
@@ -275,6 +276,7 @@ public class MarvelControlador {
                 }
                 case 2 -> {
                     List<Evento> eventos = eventoServicio.buscarTodosLosEventos();
+
                     vista.mostrarEventos(eventos,false);
                     String nombreEvento = vista.solicitarEntrada("Introduce el nombre del evento: ");
                     try {
@@ -334,17 +336,43 @@ public class MarvelControlador {
             vista.mostrarPersonajes(personajes, false);
             String nombrePersonaje = vista.solicitarEntrada("Introduce el nombre del personaje (0 para salir): ");
             if (nombrePersonaje.equals("0")) return;
-            Personaje personaje = personajeServicio.buscarPersonajePorNombre(nombrePersonaje);
-            if (personaje == null) {
+            Personaje personaje;
+            try {
+                personaje = personajeServicio.buscarPersonajePorNombre(nombrePersonaje);
+            } catch (IllegalArgumentException e) {
                 vista.mensajeError("Personaje no encontrado.");
                 continue;
             }
-            Traje traje = seleccionarTraje(); // puede devolver null
+
+            if (personaje.getTraje() != null) {
+                vista.mensaje(
+                        "El personaje " + personaje.getNombre() +
+                                " ya tiene el traje: " + personaje.getTraje());
+
+                while (true) {
+                    String decision = vista.solicitarEntrada(
+                            "¿Deseas cambiar el traje? S|s / N|n : "
+                    ).trim();
+
+                    if (decision.equalsIgnoreCase("S")) {
+                        break;
+                    }
+
+                    if (decision.equalsIgnoreCase("N")) {
+                        return;
+                    }
+
+                    vista.mensajeError("Error: Introduce S o N correctamente.");
+                }
+            }
+
+            Traje traje = seleccionarTraje();
             personajeServicio.cambiarTraje(personaje.getId(), traje);
             vista.mensaje("Traje cambiado correctamente.");
             return;
         }
     }
+
 
     private void mostrarDatosPersonaje() {
         List<Personaje> personajes = personajeServicio.buscarTodosLosPersonajes();
@@ -352,20 +380,16 @@ public class MarvelControlador {
             vista.mensaje("No hay personajes registrados.");
             return;
         }
-
         vista.mostrarPersonajes(personajes, true);
         int id = solicitarInt("Introduce el número del personaje, o 0 para volver al menú principal: ",0, personajes.size(),false);
-
         if (id == 0) return;
-
         try {
-            Personaje personaje = personajeServicio.buscarPorId(personajes.get(id - 1).getId());
+            Personaje personaje = personajeServicio.obtenerPersonajeConDatos(personajes.get(id - 1).getNombre());
             vista.mostrarDatosPersonaje(personaje);
         } catch (IllegalArgumentException e) {
             vista.mensajeError(e.getMessage());
         }
     }
-
 
     private void mostrarPersonajesEvento() {
         List<Evento> eventos = eventoServicio.buscarTodosLosEventos();
@@ -373,17 +397,20 @@ public class MarvelControlador {
             vista.mensaje("No hay eventos registrados.");
             return;
         }
-
         vista.mostrarEventos(eventos, true);
-        int id = solicitarInt("Introduce el número del evento pa ra consultar que personajes participarón " +
-                "\n o pulsa 0 para volver al menu principal: ", 0 , eventos.size(),false);
+        int id = solicitarInt("Introduce el número del evento para consultar que personajes participaron " +
+                "\n o pulsa 0 para volver al menú principal: ", 0 , eventos.size(),false);
         if (id == 0) return;
         List<Personaje> personajes = participaServicio.buscarPersonajesDeUnEvento(eventos.get(id-1));
-        vista.mensaje("Has solicitado ver los personajes que oparticipan en el evento.- " + eventos.get(id-1).getNombre());
+        if (personajes.isEmpty()) {
+            vista.mensaje("No hay personajes asociados a este evento.");
+            return;
+        }
+        vista.mensaje("Has solicitado ver los personajes que participan en el evento -> " + eventos.get(id-1).getNombre());
         vista.mostrarPersonajesDeUnEvento(personajes);
     }
 
-    private void MostrarPersonajesPorHabilidad() {
+    private void mostrarPersonajesPorHabilidad() {
         List<Habilidad> habilidades = habilidadServicio.buscarTodasLasHabilidades();
         vista.mostrarHabilidades(habilidades, false);
         String nombreHabilidad;
@@ -422,8 +449,9 @@ public class MarvelControlador {
         List<Traje> disponibles = trajeServicio.buscarTrajesDisponibles();
         if (disponibles.isEmpty()) {
             vista.mensaje("No hay trajes disponibles.");
+            return null;
         }
-        vista.mostrarTrajesDisponibles(disponibles);
+        vista.menuSeleccionarTraje();
         int opcion = solicitarInt("Elige una opción: ", 0, Integer.MAX_VALUE, true);
         if (opcion == -1) {
             return null;
@@ -435,7 +463,7 @@ public class MarvelControlador {
         int idTraje = 0;
         if (opcion == 1) {
             vista.mostrarTrajesDisponibles(disponibles);
-            int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, Integer.MAX_VALUE, false);
+            int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, disponibles.size(), false);
             idTraje = disponibles.get(seleccion).getId();
         }
         Traje traje = null;

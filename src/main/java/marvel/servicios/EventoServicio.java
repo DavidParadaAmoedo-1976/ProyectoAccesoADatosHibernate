@@ -20,9 +20,6 @@ public class EventoServicio {
 
     public List<Evento> buscarTodosLosEventos() {
         List<Evento> eventos = eventoDAO.buscarTodosLosEventos();
-        if (eventos.isEmpty()) {
-            throw new IllegalArgumentException("No se encontraron eventos");
-        }
         return eventos;
     }
 

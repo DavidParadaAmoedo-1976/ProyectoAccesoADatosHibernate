@@ -76,20 +76,16 @@ public class PersonajeServicio {
 
 
     public void cambiarTraje(int idPersonaje, Traje nuevoTraje) {
-
         Personaje personaje = buscarPorId(idPersonaje);
-
         if (personaje.getTraje() != null) {
             personaje.getTraje().setPersonaje(null);
         }
-
         if (nuevoTraje != null) {
             nuevoTraje.setPersonaje(personaje);
             personaje.setTraje(nuevoTraje);
         } else {
             personaje.setTraje(null);
         }
-
         personajeDAO.actualizarPersonaje(personaje);
     }
 
