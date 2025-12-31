@@ -4,6 +4,7 @@ import marvel.modelo.entidades.Evento;
 import marvel.modelo.entidades.Habilidad;
 import marvel.modelo.entidades.Personaje;
 import marvel.modelo.entidades.Traje;
+import marvel.modelo.enums.EstilosEnum;
 import marvel.modelo.enums.MenuEnum;
 import marvel.modelo.enums.ModificarHabilidadEnum;
 import marvel.modelo.enums.ModificarPersonajeEnum;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class MarvelControlador {
 
+    public static final int MAX_SEL_TRAJE = 2;
     private final MarvelVista vista;
     private final PersonajeServicio personajeServicio;
     private final HabilidadServicio habilidadServicio;
@@ -94,7 +96,7 @@ public class MarvelControlador {
         }
         while (true) {
             vista.mostrarPersonajes(personajes, true);
-            vista.mensaje("0.- Volver al menú anterior");
+            vista.mensaje("\n\n0.-" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior" + EstilosEnum.RESET.getFormato());
             int id = solicitarInt("Selecciona el personaje a borrar: ", 0, personajes.size(), false);
             if (id == 0) return;
             try {
@@ -118,9 +120,9 @@ public class MarvelControlador {
             vista.mensaje("No hay personajes registrados.");
             return;
         }
-        vista.mensaje("Has seleccionado la opcion de modificar personaje");
+        vista.mensaje("Has seleccionado la opción de modificar personaje");
         vista.mostrarPersonajes(personajes, true);
-        vista.mensaje("0.- Volver al menu anterior");
+        vista.mensaje("\n\n0.-" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior" + EstilosEnum.RESET.getFormato());
         int id = solicitarInt("Selecciona el personaje a modificar: ", 0, personajes.size(), false);
         if (id == 0) return;
         Personaje personaje = personajes.get(id - 1);
@@ -176,8 +178,8 @@ public class MarvelControlador {
         }
         vista.mostrarHabilidades(habilidades, false);
         while (true) {
-            vista.mensaje("\nVas a borrar una habilidad.");
-            vista.mensaje("Escribe 0 para volver al menú.");
+            vista.mensaje("\n\nVas a borrar una habilidad.");
+            vista.mensaje("0.-" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior" + EstilosEnum.RESET.getFormato());
             String nombre = vista.solicitarEntrada("Nombre de la habilidad que quieres borrar: ").trim().toLowerCase();
             if (nombre.equals("0")) {
                 return;
@@ -197,7 +199,7 @@ public class MarvelControlador {
         List<Habilidad> habilidades = habilidadServicio.buscarTodasLasHabilidades();
         vista.mensaje("Vas a modificar una habilidad.");
         vista.mostrarHabilidades(habilidades, true);
-        vista.mensaje("0.- Volver al menú anterior");
+        vista.mensaje("\n\n0.-" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior" + EstilosEnum.RESET.getFormato());
         if (habilidades.isEmpty()) {
             vista.mensaje("No hay habilidades para modificar.");
             return;
@@ -243,10 +245,10 @@ public class MarvelControlador {
             try {
                 vista.mensaje("Vas a asignar una habilidad a un personaje.");
                 vista.mostrarPersonajes(personajes, false);
-                String nombrePersonaje = vista.solicitarEntrada("Nombre del personaje (0 para salir): ").trim();
+                String nombrePersonaje = vista.solicitarEntrada("\nNombre del personaje (0 para salir): ").trim();
                 if (nombrePersonaje.equals("0")) return;
                 vista.mostrarHabilidades(habilidades, false);
-                String nombreHabilidad = vista.solicitarEntrada("Nombre de la habilidad (0 para salir): ").trim();
+                String nombreHabilidad = vista.solicitarEntrada("\nNombre de la habilidad (0 para salir): ").trim();
                 if (nombreHabilidad.equals("0")) return;
                 personajeServicio.asignarHabilidad(nombrePersonaje, nombreHabilidad);
                 vista.mensaje("Habilidad asignada correctamente.");
@@ -451,17 +453,22 @@ public class MarvelControlador {
             vista.mensaje("No hay trajes disponibles.");
             return null;
         }
-        vista.menuSeleccionarTraje();
-        int opcion = solicitarInt("Elige una opción: ", 0, Integer.MAX_VALUE, true);
+        vista.mostrarMenuSeleccionarTraje();
+        int opcion = solicitarInt("Elige una opción: ", 0, MAX_SEL_TRAJE, true);
         if (opcion == -1) {
             return null;
         }
+
         if (opcion == 0) {
+          return null;
+        }
+
+        if (opcion == 1) {
             String especificacion = vista.solicitarEntrada("Especificación del nuevo traje: ");
             return trajeServicio.crearTraje(especificacion);
         }
         int idTraje = 0;
-        if (opcion == 1) {
+        if (opcion == 2) {
             vista.mostrarTrajesDisponibles(disponibles);
             int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, disponibles.size(), false);
             idTraje = disponibles.get(seleccion).getId();

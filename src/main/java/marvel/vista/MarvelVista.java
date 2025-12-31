@@ -18,7 +18,8 @@ public class MarvelVista {
         for (int i = 1; i < opciones.length; i++) {
             System.out.println("\t".repeat(2) + i + ".\t" + EstilosEnum.VERDE.getFormato() + opciones[i].gettexto() + EstilosEnum.RESET.getFormato());
         }
-        System.out.println("\t".repeat(2) + "0." + EstilosEnum.CYAN.getFormato() + "\tSalir." + EstilosEnum.RESET.getFormato());
+        System.out.println();
+        System.out.println("\t".repeat(2) + "0." + EstilosEnum.NARANJA.getFormato() + "\tSalir." + EstilosEnum.RESET.getFormato());
     }
 
     public void mostrarMenuModificarPersonaje() {
@@ -27,7 +28,7 @@ public class MarvelVista {
         for (int i = 1; i < opciones.length; i++) {
             System.out.println(i + ".-\t" + opciones[i].getTexto());
         }
-        System.out.println("0.-\tVolver al menú anterior.");
+        System.out.println("\n0.-\t" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior." +  EstilosEnum.RESET.getFormato());
     }
 
     public void mostrarMenuModificarHabilidad() {
@@ -36,9 +37,24 @@ public class MarvelVista {
         for (int i = 1; i < opciones.length; i++) {
             System.out.println(i + ".-\t" + opciones[i].getTexto());
         }
-        System.out.println("0.-\tVolver al menú anterior.");
+        System.out.println("\n0.-\t" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior." +  EstilosEnum.RESET.getFormato());
     }
 
+    public void mostrarMenuSeleccionarTraje() {
+        System.out.println("1.- Crear traje nuevo");
+        System.out.println("2.- Seleccionar un traje");
+        System.out.println();
+        System.out.println("\n0.-\t" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior." +  EstilosEnum.RESET.getFormato());
+        System.out.println("Deja vacío si no quieres seleccionar traje.");
+    }
+
+    public void mostrarMenuEventos() {
+        System.out.println("\t" + EstilosEnum.SUBRAYADO.getFormato() + "Menu de opciones" +  EstilosEnum.RESET.getFormato());
+        System.out.println("1.- Crear evento nuevo.");
+        System.out.println("2.- Seleccionar un evento.");
+        System.out.println();
+        System.out.println("0.- " + EstilosEnum.NARANJA.getFormato() + "Salir al menú principal." + EstilosEnum.RESET.getFormato());
+    }
 
     public String solicitarEntrada(String mensaje) {
         System.out.print(mensaje);
@@ -62,46 +78,44 @@ public class MarvelVista {
         }
     }
 
-    public void menuSeleccionarTraje() {
-        System.out.println("0.- Crear traje nuevo");
-        System.out.println("1.- Seleccionar un traje");
-        System.out.println("Deja vacío si no quieres seleccionar traje.");
-    }
-
     public void mostrarPersonajes(List<Personaje> personajes, boolean mostrarId) {
         System.out.println("Personajes existentes:");
         int cont = 1;
         for (Personaje personaje : personajes) {
-            System.out.println((mostrarId ? (cont + ".- ") : "") + personaje.getNombre() + " (" + personaje.getAlias() + ")");
+//            System.out.println((mostrarId ? (cont + ".- ") : "") + personaje.getNombre() + " (" + personaje.getAlias() + ")");
+
+            if (mostrarId) {
+                System.out.printf("\n%3d.- %-15s %-15s", cont, personaje.getNombre(), personaje.getAlias());
+            } else {
+                System.out.printf("\n%-15s %-15s", personaje.getNombre(), personaje.getAlias());
+            }
             cont++;
         }
     }
-
 
     public void mostrarHabilidades(List<Habilidad> habilidades, boolean mostrarId) {
         System.out.println("Lista de Habilidades.");
 
         int cont = 1;
         for (Habilidad habilidad : habilidades) {
-            System.out.println((mostrarId ? (cont + ".- ") : "") + habilidad.getNombre() + " -> " + habilidad.getDescripcion());
+            if (mostrarId) {
+                System.out.printf("\n%3d.- %-30s -> %-30s",cont, habilidad.getNombre(), habilidad.getDescripcion());
+            } else {
+                System.out.printf("\n%-30s -> %-30s", habilidad.getNombre(), habilidad.getDescripcion());
+            }
             cont++;
         }
-    }
-
-    public void mostrarMenuEventos() {
-        System.out.println("""
-                            Menu de opciones
-                1.- Crear evento nuevo.
-                2.- Seleccionar un evento.
-                0.- Salir al menú principal.
-                """);
     }
 
     public void mostrarEventos(List<Evento> eventos, boolean mostrarId) {
         System.out.println("Lista de eventos\n");
         int cont = 1;
         for (Evento evento : eventos) {
-            System.out.println((mostrarId ? (cont + ".- ") : "") + evento.getNombre() + "\t->" + evento.getLugar());
+            if (mostrarId) {
+                System.out.printf("\n%3d.- %-30s -> %-30s",cont, evento.getNombre(), evento.getLugar());
+            } else {
+                System.out.printf("\n%-30s -> %-30s", evento.getNombre(), evento.getLugar());
+            }
             cont++;
         }
     }
@@ -171,7 +185,7 @@ public class MarvelVista {
     }
 
     private void esperarIntro() {
-        System.out.println("\npulsa intro para volver al menú");
+        System.out.println("\nPulsa intro para volver al menú");
         sc.nextLine();
         System.out.println("\n".repeat(50));
     }
