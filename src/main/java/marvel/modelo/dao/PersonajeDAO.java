@@ -15,7 +15,6 @@ public class PersonajeDAO {
                 .createQuery("FROM Personaje", Personaje.class)
                 .getResultList();
         session.close();
-
         return todosLosPersonajes;
     }
 
@@ -52,10 +51,8 @@ public class PersonajeDAO {
 
     public Personaje buscarPersonajePorNombre(String nombrePersonaje) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-
         Personaje personaje = session.createQuery("FROM Personaje p WHERE lower(p.nombre) = :nombre",
                 Personaje.class).setParameter("nombre", nombrePersonaje.toLowerCase()).uniqueResult();
-
         session.close();
         return personaje;
     }
@@ -73,17 +70,14 @@ public class PersonajeDAO {
 
     public long contarPersonajesPorHabilidad(String nombreHabilidad) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-
         Long total = session.createQuery("SELECT COUNT(p) FROM Personaje p JOIN p.habilidades h WHERE lower(h.nombre) = :nombre",
                 Long.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
-
         session.close();
         return total != null ? total : 0;
     }
 
     public Personaje buscarPorNombreConTodo(String nombre) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-
         Personaje personaje = session.createQuery(
                         "SELECT DISTINCT p FROM Personaje p " +
                                 "LEFT JOIN FETCH p.traje " +
@@ -95,9 +89,7 @@ public class PersonajeDAO {
                 )
                 .setParameter("nombre", nombre.toLowerCase())
                 .uniqueResult();
-
         session.close();
         return personaje;
     }
-
 }

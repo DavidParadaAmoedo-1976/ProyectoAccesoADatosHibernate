@@ -9,9 +9,7 @@ public class HibernateUtil {
 
     static {
         try {
-
             SESSION_FACTORY = new Configuration().configure().buildSessionFactory();
-
         } catch (Throwable ex) {
             System.err.println("Error al crear la configuración de hibernate" + ex.getMessage());
             throw new ExceptionInInitializerError();
@@ -27,6 +25,5 @@ public class HibernateUtil {
             SESSION_FACTORY.close();
         }
     }
-
 }
 

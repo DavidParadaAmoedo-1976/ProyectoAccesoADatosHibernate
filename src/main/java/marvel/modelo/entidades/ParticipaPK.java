@@ -18,6 +18,5 @@ public class ParticipaPK implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(personaje, evento);
-
     }
 }

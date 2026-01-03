@@ -34,26 +34,20 @@ public class HabilidadServicio {
     }
 
     public Habilidad buscarPorNombre(String nombre) {
-
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
-
         Habilidad habilidad = habilidadDAO.buscarHabilidadPorNombre(nombre);
-
         if (habilidad == null) {
             throw new IllegalArgumentException("La habilidad no existe");
         }
-
         return habilidad;
     }
 
     public void cambiarNombre(String nombreHabilidad, String nuevoNombre) {
-
         if (nuevoNombre == null || nuevoNombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
-
         Habilidad habilidad = buscarPorNombre(nombreHabilidad);
         habilidad.setNombre(nuevoNombre);
         habilidadDAO.actualizarHabilidad(habilidad);
@@ -67,6 +61,4 @@ public class HabilidadServicio {
         habilidad.setDescripcion(nuevaDescripcion);
         habilidadDAO.actualizarHabilidad(habilidad);
     }
-
-
 }

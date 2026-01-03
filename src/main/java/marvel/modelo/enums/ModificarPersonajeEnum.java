@@ -16,5 +16,4 @@ public enum ModificarPersonajeEnum {
     public String getTexto() {
         return TEXTO;
     }
-
 }

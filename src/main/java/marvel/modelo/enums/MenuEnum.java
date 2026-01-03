@@ -20,7 +20,6 @@ public enum MenuEnum {
     MOSTRAR_PERSONAJES_EVENTO("Mostrar los personajes de un evento."),
     CONTAR_POR_HABILIDAD("Contar cuantos personajes tienen una habilidad concreta.");
 
-
     private final String TEXTO;
 
     MenuEnum(String TEXTO) {

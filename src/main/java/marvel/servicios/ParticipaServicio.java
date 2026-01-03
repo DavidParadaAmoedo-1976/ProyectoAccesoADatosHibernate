@@ -31,7 +31,6 @@ public class ParticipaServicio {
         participa.setPersonaje(personaje);
         participa.setFecha(fecha);
         participa.setRol(rol);
-
         participaDAO.guardarParticipa(participa);
     }
 

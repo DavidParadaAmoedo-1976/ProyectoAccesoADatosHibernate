@@ -24,19 +24,15 @@ public class PersonajeServicio {
     }
 
     public void crearPersonaje(String nombre, String alias, Traje traje) {
-
         int idPersonaje = GenericDAO.siguienteId(Personaje.class, "id");
-
         Personaje personaje = new Personaje();
         personaje.setId(idPersonaje);
         personaje.setNombre(nombre);
         personaje.setAlias(alias);
-
         if (traje != null) {
             personaje.setTraje(traje);
             traje.setPersonaje(personaje);
         }
-
         personajeDAO.guardarPersonaje(personaje);
     }
 
@@ -54,11 +50,9 @@ public class PersonajeServicio {
 
 
     public void cambiarNombre(int idPersonaje, String nuevoNombre) {
-
         if (nuevoNombre == null || nuevoNombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
-
         Personaje personaje = buscarPorId(idPersonaje);
         personaje.setNombre(nuevoNombre);
         personajeDAO.actualizarPersonaje(personaje);
@@ -69,11 +63,9 @@ public class PersonajeServicio {
             throw new IllegalArgumentException("El Alias no puede estar vacío");
         }
         Personaje personaje = buscarPorId(idPersonaje);
-
         personaje.setAlias(nuevoAlias);
         personajeDAO.actualizarPersonaje(personaje);
     }
-
 
     public void cambiarTraje(int idPersonaje, Traje nuevoTraje) {
         Personaje personaje = buscarPorId(idPersonaje);
@@ -118,42 +110,32 @@ public class PersonajeServicio {
     }
 
     public void asignarHabilidad(String nombrePersonaje, String nombreHabilidad) {
-
         if (nombrePersonaje == null || nombrePersonaje.isBlank()) {
             throw new IllegalArgumentException("El nombre del personaje no puede estar vacío");
         }
-
         if (nombreHabilidad == null || nombreHabilidad.isBlank()) {
             throw new IllegalArgumentException("El nombre de la habilidad no puede estar vacío");
         }
-
         Personaje personaje = personajeDAO.buscarPorNombreConHabilidades(nombrePersonaje);
         Habilidad habilidad = habilidadDAO.buscarHabilidadPorNombre(nombreHabilidad);
-
         if (personaje == null) {
             throw new IllegalArgumentException("Personaje no encontrado");
         }
-
         if (habilidad == null) {
             throw new IllegalArgumentException("Habilidad no encontrada");
         }
-
         if (personaje.getHabilidades().contains(habilidad)) {
             throw new IllegalArgumentException("El personaje ya tiene esa habilidad");
         }
-
         personaje.getHabilidades().add(habilidad);
-
         personajeDAO.actualizarPersonaje(personaje);
     }
 
 
     public long contarPersonajesPorHabilidad(String nombreHabilidad) {
-
         if (nombreHabilidad == null || nombreHabilidad.isBlank()) {
             throw new IllegalArgumentException("El nombre de la habilidad no puede estar vacío");
         }
-
         return personajeDAO.contarPersonajesPorHabilidad(nombreHabilidad);
     }
 
@@ -161,10 +143,8 @@ public class PersonajeServicio {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
-
         return personajeDAO.buscarPorNombreConTodo(nombre);
     }
-
 }
 
 

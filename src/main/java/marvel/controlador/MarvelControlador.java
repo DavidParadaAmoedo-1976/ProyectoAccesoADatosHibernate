@@ -345,12 +345,10 @@ public class MarvelControlador {
                 vista.mensajeError("Personaje no encontrado.");
                 continue;
             }
-
             if (personaje.getTraje() != null) {
                 vista.mensaje(
                         "El personaje " + personaje.getNombre() +
                                 " ya tiene el traje: " + personaje.getTraje());
-
                 while (true) {
                     String decision = vista.solicitarEntrada(
                             "¿Deseas cambiar el traje? S|s / N|n : "
@@ -367,7 +365,6 @@ public class MarvelControlador {
                     vista.mensajeError("Error: Introduce S o N correctamente.");
                 }
             }
-
             Traje traje = seleccionarTraje();
             personajeServicio.cambiarTraje(personaje.getId(), traje);
             vista.mensaje("Traje cambiado correctamente.");
@@ -458,11 +455,9 @@ public class MarvelControlador {
         if (opcion == -1) {
             return null;
         }
-
         if (opcion == 0) {
           return null;
         }
-
         if (opcion == 1) {
             String especificacion = vista.solicitarEntrada("Especificación del nuevo traje: ");
             return trajeServicio.crearTraje(especificacion);

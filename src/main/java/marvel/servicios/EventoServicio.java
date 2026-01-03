@@ -29,7 +29,6 @@ public class EventoServicio {
         evento.setId(idEvento);
         evento.setNombre(nombreEvento);
         evento.setLugar(lugarEvento);
-
         eventoDAO.guardarEvento(evento);
     }
 }

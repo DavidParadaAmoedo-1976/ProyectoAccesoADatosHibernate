@@ -27,5 +27,4 @@ public class Habilidad {
 
     @ManyToMany(mappedBy = "habilidades")
     private Set<Personaje> personajes = new HashSet<>();
-
 }

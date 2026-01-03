@@ -22,16 +22,13 @@ public class HabilidadDAO {
                 .createQuery("FROM Habilidad", Habilidad.class)
                 .getResultList();
         session.close();
-
         return todasLasHabilidades;
     }
 
     public Habilidad buscarHabilidadPorNombre(String nombreHabilidad) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-
         Habilidad habilidad = session.createQuery("FROM Habilidad h WHERE lower(h.nombre) = :nombre",
                 Habilidad.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
-
         session.close();
         return habilidad;
     }

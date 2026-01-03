@@ -72,7 +72,6 @@ public class MarvelVista {
 
     public void mostrarTrajesDisponibles(List<Traje> trajes) {
         System.out.println("Trajes disponibles:");
-
         for (Traje traje : trajes) {
             System.out.println(traje.getId() + " .- " + traje.getEspecificacion());
         }
@@ -82,8 +81,6 @@ public class MarvelVista {
         System.out.println("Personajes existentes:");
         int cont = 1;
         for (Personaje personaje : personajes) {
-//            System.out.println((mostrarId ? (cont + ".- ") : "") + personaje.getNombre() + " (" + personaje.getAlias() + ")");
-
             if (mostrarId) {
                 System.out.printf("\n%3d.- %-15s %-15s", cont, personaje.getNombre(), personaje.getAlias());
             } else {
@@ -95,7 +92,6 @@ public class MarvelVista {
 
     public void mostrarHabilidades(List<Habilidad> habilidades, boolean mostrarId) {
         System.out.println("Lista de Habilidades.");
-
         int cont = 1;
         for (Habilidad habilidad : habilidades) {
             if (mostrarId) {
@@ -121,21 +117,16 @@ public class MarvelVista {
     }
 
     public void mostrarDatosPersonaje(Personaje personaje) {
-
         System.out.print("\t".repeat(5) + " \u250C" + "\u2500".repeat(79) + "\u2510");
         System.out.printf("\n" + "\t".repeat(5) + " \u2502" + EstilosEnum.AMARILLO.getFormato() + " %-77s " + EstilosEnum.RESET.getFormato() + "\u2502", "                             DATOS DEL PERSONAJE");
         System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(15)+ "\u252C" + "\u2500".repeat(63) +  "\u2524");
-
-
         System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502", "Nombre: ", personaje.getNombre());
         System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502","Alias: ", personaje.getAlias());
-
         if (personaje.getTraje() != null) {
             System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502","Traje: ",personaje.getTraje().getEspecificacion());
         } else {
             System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-13s \u2502 %-61s \u2502","Traje: ","Ningún traje asignado");
         }
-
         System.out.printf("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(15) + "\u2534" + "\u2500".repeat(63) + "\u2524");
         System.out.printf("\n" + "\t".repeat(5) + " \u2502" + EstilosEnum.AMARILLO.getFormato() + " %-77s " + EstilosEnum.RESET.getFormato() + "\u2502", "                           HABILIDADES");
         System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(79) +  "\u2524");
@@ -150,7 +141,6 @@ public class MarvelVista {
         System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(79) +  "\u2524");
         System.out.printf("\n" + "\t".repeat(5) + " \u2502" + EstilosEnum.AMARILLO.getFormato() + " %-77s " + EstilosEnum.RESET.getFormato() + "\u2502", "                             EVENTOS");
         if (personaje.getParticipaciones() != null) {
-
             if (personaje.getParticipaciones().isEmpty()) {
                 System.out.print("\n" + "\t".repeat(5) + " \u251C" + "\u2500".repeat(79) +  "\u2524");
                 System.out.printf("\n" + "\t".repeat(5) + " \u2502 %-77s \u2502", "No participó en ningún evento");
