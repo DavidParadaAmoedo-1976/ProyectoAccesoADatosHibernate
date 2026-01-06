@@ -10,7 +10,7 @@ import java.util.List;
 public class EventoDAO {
 
     public void guardarEvento(Evento evento) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.persist(evento);
         tx.commit();
@@ -18,7 +18,7 @@ public class EventoDAO {
     }
 
     public List<Evento> buscarTodosLosEventos() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         List<Evento> todosLosEventos = session
                 .createQuery("FROM Evento", Evento.class)
                 .getResultList();
@@ -28,7 +28,7 @@ public class EventoDAO {
     }
 
     public Evento buscarEventoPorNombre(String nombreEvento) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Evento evento = session
                 .createQuery("FROM Evento e WHERE lower(e.nombre) =: nombre", Evento.class)
                 .setParameter("nombre", nombreEvento.toLowerCase()).uniqueResult();

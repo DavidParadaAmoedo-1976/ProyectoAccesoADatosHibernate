@@ -9,14 +9,15 @@ import marvel.vista.MarvelVista;
 public class Programa {
 
     public static void main(String[] args) {
-        HibernateUtil.getSessionFactory();
+        HibernateUtil.get();
         MarvelVista vista = new MarvelVista();
         PersonajeDAO personajeDAO = new PersonajeDAO();
         TrajeDAO trajeDAO = new TrajeDAO();
         HabilidadDAO habilidadDAO = new HabilidadDAO();
+        ParticipaDAO participaDAO = new ParticipaDAO();
         EventoDAO eventoDAO = new EventoDAO();
         GenericDAO genericDAO = new GenericDAO();
-        PersonajeServicio personajeServicio = new PersonajeServicio(personajeDAO, trajeDAO, habilidadDAO);
+        PersonajeServicio personajeServicio = new PersonajeServicio(personajeDAO, trajeDAO, habilidadDAO, participaDAO);
         HabilidadServicio habilidadServicio = new HabilidadServicio(habilidadDAO);
         TrajeServicio trajeServicio = new TrajeServicio(trajeDAO);
         EventoServicio eventoServicio = new EventoServicio();

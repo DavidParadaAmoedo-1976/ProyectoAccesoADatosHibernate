@@ -10,7 +10,7 @@ import java.util.List;
 public class TrajeDAO {
 
     public void guardar(Traje traje) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.persist(traje);
         tx.commit();
@@ -18,14 +18,14 @@ public class TrajeDAO {
     }
 
     public Traje buscarPorId(int id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Traje traje = session.find(Traje.class, id);
         session.close();
         return traje;
     }
 
     public List<Traje> buscarTrajesDisponibles() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         List<Traje> lista = session.createQuery(
                 "FROM Traje traje WHERE traje.personaje IS NULL", Traje.class).list();
         session.close();

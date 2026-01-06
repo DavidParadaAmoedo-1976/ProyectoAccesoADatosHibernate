@@ -12,7 +12,7 @@ import java.util.List;
 public class ParticipaDAO {
 
     public void guardarParticipa(Participa participa) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.persist(participa);
         tx.commit();
@@ -20,11 +20,24 @@ public class ParticipaDAO {
     }
 
     public List<Personaje> buscarPersonajesDeUnEvento(Evento evento) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         List<Personaje> personajes = session.createQuery("SELECT p.personaje FROM Participa p WHERE p.evento = :evento",Personaje.class)
                 .setParameter("evento", evento)
                 .getResultList();
         session.close();
         return personajes;
     }
+
+    public void borrarParticipacionesDePersonaje(int idPersonaje) {
+        Session session = HibernateUtil.get().openSession();
+        Transaction tx = session.beginTransaction();
+        session.createQuery(
+                        "delete from Participa p where p.personaje.id = :id"
+                )
+                .setParameter("id", idPersonaje)
+                .executeUpdate();
+        tx.commit();
+        session.close();
+    }
+
 }

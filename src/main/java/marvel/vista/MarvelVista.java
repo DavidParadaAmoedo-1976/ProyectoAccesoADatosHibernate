@@ -43,8 +43,7 @@ public class MarvelVista {
     public void mostrarMenuSeleccionarTraje() {
         System.out.println("1.- Crear traje nuevo");
         System.out.println("2.- Seleccionar un traje");
-        System.out.println();
-        System.out.println("\n0.-\t" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior." +  EstilosEnum.RESET.getFormato());
+        System.out.println("0.-\t" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior." +  EstilosEnum.RESET.getFormato());
         System.out.println("Deja vacío si no quieres seleccionar traje.");
     }
 

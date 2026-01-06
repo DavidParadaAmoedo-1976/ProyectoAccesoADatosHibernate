@@ -9,7 +9,7 @@ import java.util.List;
 
 public class HabilidadDAO {
     public void guardarHabilidades(Habilidad habilidad) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.persist(habilidad);
         tx.commit();
@@ -17,7 +17,7 @@ public class HabilidadDAO {
     }
 
     public List<Habilidad> buscarTodasLasHabilidades() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         List<Habilidad> todasLasHabilidades = session
                 .createQuery("FROM Habilidad", Habilidad.class)
                 .getResultList();
@@ -26,7 +26,7 @@ public class HabilidadDAO {
     }
 
     public Habilidad buscarHabilidadPorNombre(String nombreHabilidad) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Habilidad habilidad = session.createQuery("FROM Habilidad h WHERE lower(h.nombre) = :nombre",
                 Habilidad.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
         session.close();
@@ -34,7 +34,7 @@ public class HabilidadDAO {
     }
 
     public void borrarHabilidad(Habilidad habilidad) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.remove(habilidad);
         tx.commit();
@@ -42,7 +42,7 @@ public class HabilidadDAO {
     }
 
     public void actualizarHabilidad(Habilidad habilidad) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.merge(habilidad);
         tx.commit();

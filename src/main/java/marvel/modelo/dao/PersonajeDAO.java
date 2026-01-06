@@ -4,13 +4,12 @@ import marvel.modelo.entidades.Personaje;
 import marvel.modelo.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-
 import java.util.List;
 
 public class PersonajeDAO {
 
     public List<Personaje> buscarTodosLosPersonajes() {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         List<Personaje> todosLosPersonajes = session
                 .createQuery("FROM Personaje", Personaje.class)
                 .getResultList();
@@ -19,7 +18,7 @@ public class PersonajeDAO {
     }
 
     public void guardarPersonaje(Personaje personaje) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.persist(personaje);
         tx.commit();
@@ -27,14 +26,14 @@ public class PersonajeDAO {
     }
 
     public Personaje buscarPersonajePorId(int id) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Personaje personaje = session.find(Personaje.class, id);
         session.close();
         return personaje;
     }
 
     public void borrarPersonaje(Personaje personaje) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction trx = session.beginTransaction();
         session.remove(personaje);
         trx.commit();
@@ -42,7 +41,7 @@ public class PersonajeDAO {
     }
 
     public void actualizarPersonaje(Personaje personaje) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
         session.merge(personaje);
         tx.commit();
@@ -50,7 +49,7 @@ public class PersonajeDAO {
     }
 
     public Personaje buscarPersonajePorNombre(String nombrePersonaje) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Personaje personaje = session.createQuery("FROM Personaje p WHERE lower(p.nombre) = :nombre",
                 Personaje.class).setParameter("nombre", nombrePersonaje.toLowerCase()).uniqueResult();
         session.close();
@@ -58,7 +57,7 @@ public class PersonajeDAO {
     }
 
     public Personaje buscarPorNombreConHabilidades(String nombre) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Personaje p = session.createQuery(
                         "SELECT p FROM Personaje p LEFT JOIN FETCH p.habilidades WHERE lower(p.nombre)=:nombre",
                         Personaje.class
@@ -69,7 +68,7 @@ public class PersonajeDAO {
     }
 
     public long contarPersonajesPorHabilidad(String nombreHabilidad) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Long total = session.createQuery("SELECT COUNT(p) FROM Personaje p JOIN p.habilidades h WHERE lower(h.nombre) = :nombre",
                 Long.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
         session.close();
@@ -77,7 +76,7 @@ public class PersonajeDAO {
     }
 
     public Personaje buscarPorNombreConTodo(String nombre) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Session session = HibernateUtil.get().openSession();
         Personaje personaje = session.createQuery(
                         "SELECT DISTINCT p FROM Personaje p " +
                                 "LEFT JOIN FETCH p.traje " +
@@ -92,4 +91,17 @@ public class PersonajeDAO {
         session.close();
         return personaje;
     }
+
+    public boolean personajeParticipaEnEvento(int idPersonaje) {
+        Session session = HibernateUtil.get().openSession();
+        Long count = session.createQuery(
+                        "select count(p) from Participa p where p.personaje.id = :id",
+                        Long.class
+                )
+                .setParameter("id", idPersonaje)
+                .uniqueResult();
+        session.close();
+        return count != null && count > 0;
+    }
+
 }

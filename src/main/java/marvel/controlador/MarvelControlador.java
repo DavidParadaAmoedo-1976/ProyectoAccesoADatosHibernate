@@ -76,8 +76,17 @@ public class MarvelControlador {
     }
 
     private void crearPersonaje() {
+        String nombre;
+        while (true) {
+            nombre = vista.solicitarEntrada("Introduce el nombre del personaje: ");
+            try {
+                personajeServicio.buscarPersonajePorNombre(nombre);
+                vista.mensaje("El personaje ya existe. Introduce otro nombre.");
+            } catch (RuntimeException e) {
+                break;
+            }
+        }
         try {
-            String nombre = vista.solicitarEntrada("Introduce el nombre del personaje:");
             String alias = vista.solicitarEntrada("Introduce el alias del personaje: ");
             Traje traje = seleccionarTraje();
             personajeServicio.crearPersonaje(nombre, alias, traje);
@@ -96,16 +105,30 @@ public class MarvelControlador {
         }
         while (true) {
             vista.mostrarPersonajes(personajes, true);
-            vista.mensaje("\n\n0.-" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior" + EstilosEnum.RESET.getFormato());
-            int id = solicitarInt("Selecciona el personaje a borrar: ", 0, personajes.size(), false);
-            if (id == 0) return;
+            vista.mensaje("\n\n0.-" + EstilosEnum.NARANJA.getFormato()
+                    + "Volver al menú anterior"
+                    + EstilosEnum.RESET.getFormato());
+            int opcion = solicitarInt("Selecciona el personaje a borrar: ",0, personajes.size(),false);
+            if (opcion == 0) {
+                return;
+            }
+            Personaje personaje = personajes.get(opcion - 1);
+            int idPersonaje = personaje.getId();
             try {
-                personajeServicio.borrarPersonaje(personajes.get(id - 1).getId());
+                if (personajeServicio.participaEnEvento(idPersonaje)) {
+                    vista.mensajeError("Este personaje participa en uno o más eventos.");
+                    String respuesta = vista.solicitarEntrada("¿Deseas borrarlo igualmente? (s/n): ").trim().toLowerCase();
+                    if (!respuesta.equals("s")) {
+                        vista.mensaje("Operación cancelada.");
+                        continue;
+                    }
+                }
+                personajeServicio.borrarPersonajeForzado(idPersonaje);
                 vista.mensaje("Personaje borrado correctamente.");
+
             } catch (IllegalArgumentException e) {
                 vista.mensajeError(e.getMessage());
             }
-
             personajes = personajeServicio.buscarTodosLosPersonajes();
             if (personajes.isEmpty()) {
                 vista.mensaje("No hay más personajes registrados.");
@@ -113,6 +136,7 @@ public class MarvelControlador {
             }
         }
     }
+
 
     private void modificarPersonaje() {
         List<Personaje> personajes = personajeServicio.buscarTodosLosPersonajes();
@@ -336,11 +360,12 @@ public class MarvelControlador {
         }
         while (true) {
             vista.mostrarPersonajes(personajes, false);
-            String nombrePersonaje = vista.solicitarEntrada("Introduce el nombre del personaje (0 para salir): ");
+            String nombrePersonaje = vista.solicitarEntrada("\nIntroduce el nombre del personaje (0 para salir): ");
             if (nombrePersonaje.equals("0")) return;
             Personaje personaje;
             try {
                 personaje = personajeServicio.buscarPersonajePorNombre(nombrePersonaje);
+                vista.mensaje("Has seleccionado el personaje: " + personaje.getNombre());
             } catch (IllegalArgumentException e) {
                 vista.mensajeError("Personaje no encontrado.");
                 continue;
@@ -372,6 +397,41 @@ public class MarvelControlador {
         }
     }
 
+    private Traje seleccionarTraje() {
+        List<Traje> disponibles = trajeServicio.buscarTrajesDisponibles();
+        if (disponibles.isEmpty()) {
+            vista.mensaje("No hay trajes disponibles.\n");
+            if(solicitarBooleano("Deseas crear un traje nuevo: ")){
+                return trajeServicio.crearTraje(vista.solicitarEntrada("Introduce la especificación del nuevo traje: "));
+            }
+            return null;
+        }
+        vista.mostrarMenuSeleccionarTraje();
+        int opcion = solicitarInt("Elige una opción: ", 0, MAX_SEL_TRAJE, true);
+        if (opcion == -1) {
+            return null;
+        }
+        if (opcion == 0) {
+            return null;
+        }
+        if (opcion == 1) {
+            String especificacion = vista.solicitarEntrada("Especificación del nuevo traje: ");
+            return trajeServicio.crearTraje(especificacion);
+        }
+        int idTraje = 0;
+        if (opcion == 2) {
+            vista.mostrarTrajesDisponibles(disponibles);
+            int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, disponibles.size(), false);
+            idTraje = disponibles.get(seleccion -1 ).getId();
+        }
+        Traje traje = null;
+        try {
+            traje = trajeServicio.buscarTrajePorId(idTraje);
+        } catch (IllegalArgumentException e) {
+            vista.mensajeError(e.getMessage());
+        }
+        return traje;
+    }
 
     private void mostrarDatosPersonaje() {
         List<Personaje> personajes = personajeServicio.buscarTodosLosPersonajes();
@@ -380,7 +440,7 @@ public class MarvelControlador {
             return;
         }
         vista.mostrarPersonajes(personajes, true);
-        int id = solicitarInt("Introduce el número del personaje, o 0 para volver al menú principal: ",0, personajes.size(),false);
+        int id = solicitarInt("\nIntroduce el número del personaje, o 0 para volver al menú principal: ",0, personajes.size(),false);
         if (id == 0) return;
         try {
             Personaje personaje = personajeServicio.obtenerPersonajeConDatos(personajes.get(id - 1).getNombre());
@@ -444,36 +504,19 @@ public class MarvelControlador {
         }
     }
 
-    private Traje seleccionarTraje() {
-        List<Traje> disponibles = trajeServicio.buscarTrajesDisponibles();
-        if (disponibles.isEmpty()) {
-            vista.mensaje("No hay trajes disponibles.");
-            return null;
+    public boolean solicitarBooleano(String dato) {
+        boolean datoOk = false;
+        String input = "";
+
+        while (!datoOk) {
+            vista.mensaje(dato);
+            input = vista.solicitarEntrada("S|s o N|n -> ");
+            if (input.equalsIgnoreCase("S") || input.equalsIgnoreCase("N")) {
+                datoOk = true;
+            } else {
+                vista.mensajeError("Error: Introduzca S o N correctamente.");
+            }
         }
-        vista.mostrarMenuSeleccionarTraje();
-        int opcion = solicitarInt("Elige una opción: ", 0, MAX_SEL_TRAJE, true);
-        if (opcion == -1) {
-            return null;
-        }
-        if (opcion == 0) {
-          return null;
-        }
-        if (opcion == 1) {
-            String especificacion = vista.solicitarEntrada("Especificación del nuevo traje: ");
-            return trajeServicio.crearTraje(especificacion);
-        }
-        int idTraje = 0;
-        if (opcion == 2) {
-            vista.mostrarTrajesDisponibles(disponibles);
-            int seleccion = solicitarInt("Seleccione un traje de la lista: ", 0, disponibles.size(), false);
-            idTraje = disponibles.get(seleccion).getId();
-        }
-        Traje traje = null;
-        try {
-            traje = trajeServicio.buscarTrajePorId(idTraje);
-        } catch (IllegalArgumentException e) {
-            vista.mensajeError(e.getMessage());
-        }
-        return traje;
+        return input.equalsIgnoreCase("S");
     }
 }

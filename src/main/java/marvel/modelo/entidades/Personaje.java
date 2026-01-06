@@ -6,7 +6,8 @@ import lombok.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,6 +36,6 @@ public class Personaje {
     )
     private Set<Habilidad> habilidades = new HashSet<>();
 
-    @OneToMany(mappedBy = "personaje")
+    @OneToMany(mappedBy = "personaje", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Participa> participaciones = new HashSet<>();
 }
