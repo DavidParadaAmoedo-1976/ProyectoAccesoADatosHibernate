@@ -35,4 +35,18 @@ public class EventoDAO {
         session.close();
         return evento;
     }
+
+    public boolean existeEventoConNombre(String nombre) {
+        Session session = HibernateUtil.get().openSession();
+
+        Long total = session.createQuery(
+                        "SELECT COUNT(e) FROM Evento e WHERE lower(e.nombre) = :nombre",
+                        Long.class
+                )
+                .setParameter("nombre", nombre.toLowerCase())
+                .uniqueResult();
+
+        session.close();
+        return total != null && total > 0;
+    }
 }

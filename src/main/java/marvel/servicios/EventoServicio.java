@@ -31,6 +31,13 @@ public class EventoServicio {
         evento.setLugar(lugarEvento);
         eventoDAO.guardarEvento(evento);
     }
+
+    public boolean existeEventoConNombre(String nombre) {
+        if(nombre == null) {
+            throw new IllegalArgumentException("No se encontro el nombre del evento");
+        }
+        return eventoDAO.existeEventoConNombre(nombre);
+    }
 }
 
 

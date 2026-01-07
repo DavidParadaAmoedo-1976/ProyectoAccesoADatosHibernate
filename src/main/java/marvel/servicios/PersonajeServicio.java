@@ -140,7 +140,7 @@ public class PersonajeServicio {
             throw new IllegalArgumentException("El nombre de la habilidad no puede estar vacío");
         }
         Personaje personaje = personajeDAO.buscarPorNombreConHabilidades(nombrePersonaje);
-        Habilidad habilidad = habilidadDAO.buscarHabilidadPorNombre(nombreHabilidad);
+        Habilidad habilidad = habilidadDAO.buscarHabilidadPorNombreConPersonajes(nombreHabilidad);
         if (personaje == null) {
             throw new IllegalArgumentException("Personaje no encontrado");
         }
@@ -173,6 +173,8 @@ public class PersonajeServicio {
     public boolean participaEnEvento(int idPersonaje) {
         return personajeDAO.personajeParticipaEnEvento(idPersonaje);
     }
+
+
 }
 
 

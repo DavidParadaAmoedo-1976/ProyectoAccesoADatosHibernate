@@ -36,9 +36,6 @@ public class ParticipaServicio {
 
     public List<Personaje> buscarPersonajesDeUnEvento(Evento evento) {
         List<Personaje> personajes = participaDAO.buscarPersonajesDeUnEvento(evento);
-        if (personajes.isEmpty()){
-            throw new IllegalArgumentException("No hay personajes en ese evento");
-        }
         return personajes;
     }
 }

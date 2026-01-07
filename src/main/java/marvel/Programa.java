@@ -18,7 +18,7 @@ public class Programa {
         EventoDAO eventoDAO = new EventoDAO();
         GenericDAO genericDAO = new GenericDAO();
         PersonajeServicio personajeServicio = new PersonajeServicio(personajeDAO, trajeDAO, habilidadDAO, participaDAO);
-        HabilidadServicio habilidadServicio = new HabilidadServicio(habilidadDAO);
+        HabilidadServicio habilidadServicio = new HabilidadServicio(habilidadDAO,personajeDAO);
         TrajeServicio trajeServicio = new TrajeServicio(trajeDAO);
         EventoServicio eventoServicio = new EventoServicio();
         ParticipaServicio participaServicio = new ParticipaServicio();

@@ -173,7 +173,7 @@ public class MarvelVista {
         esperarIntro();
     }
 
-    private void esperarIntro() {
+    public void esperarIntro() {
         System.out.println("\nPulsa intro para volver al menú");
         sc.nextLine();
         System.out.println("\n".repeat(50));

@@ -33,6 +33,24 @@ public class HabilidadDAO {
         return habilidad;
     }
 
+    public Habilidad buscarHabilidadPorNombreConPersonajes(String nombre) {
+        Session session = HibernateUtil.get().openSession();
+
+        Habilidad habilidad = session.createQuery(
+                        "SELECT DISTINCT h FROM Habilidad h " +
+                                "LEFT JOIN FETCH h.personajes p " +
+                                "LEFT JOIN FETCH p.habilidades " +
+                                "WHERE lower(h.nombre) = :nombre",
+                        Habilidad.class
+                )
+                .setParameter("nombre", nombre)
+                .uniqueResult();
+
+        session.close();
+        return habilidad;
+    }
+
+
     public void borrarHabilidad(Habilidad habilidad) {
         Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
@@ -49,4 +67,11 @@ public class HabilidadDAO {
         session.close();
     }
 
+    public boolean habilidadPerteneceAUnPersonaje(String nombre) {
+        Session session = HibernateUtil.get().openSession();
+        Long numeroPersonajes = session.createQuery( "select count(p) from Personaje p join p.habilidades h where lower(h.nombre) = :nombre", Long.class)
+                .setParameter("nombre", nombre).uniqueResult();
+        session.close();
+        return numeroPersonajes != null && numeroPersonajes > 0;
+    }
 }

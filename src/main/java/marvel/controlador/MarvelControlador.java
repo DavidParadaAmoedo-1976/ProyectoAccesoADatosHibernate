@@ -200,24 +200,43 @@ public class MarvelControlador {
             vista.mensaje("No hay habilidades registradas.");
             return;
         }
+
         vista.mostrarHabilidades(habilidades, false);
+
         while (true) {
             vista.mensaje("\n\nVas a borrar una habilidad.");
-            vista.mensaje("0.-" + EstilosEnum.NARANJA.getFormato() + "Volver al menú anterior" + EstilosEnum.RESET.getFormato());
-            String nombre = vista.solicitarEntrada("Nombre de la habilidad que quieres borrar: ").trim().toLowerCase();
-            if (nombre.equals("0")) {
-                return;
-            }
+            vista.mensaje("0.- Volver al menú anterior");
+
+            String nombre = vista.solicitarEntrada(
+                    "Nombre de la habilidad que quieres borrar: "
+            ).trim().toLowerCase();
+
+            if (nombre.equals("0")) return;
+
             try {
-                Habilidad habilidad = habilidadServicio.buscarPorNombre(nombre);
-                habilidadServicio.borrarHabilidad(habilidad);
+                if (habilidadServicio.habilidadUsadaPorUnPersonaje(nombre)) {
+                    vista.mensajeError("Esa habilidad la tiene algún personaje.");
+                    String respuesta = vista.solicitarEntrada(
+                            "¿Deseas borrarla igualmente? (s/n): "
+                    ).trim().toLowerCase();
+
+                    if (!respuesta.equals("s")) {
+                        vista.mensaje("Operación cancelada.");
+                        continue;
+                    }
+                }
+
+                habilidadServicio.borrarHabilidad(nombre);
                 vista.mensaje("Habilidad borrada correctamente.");
                 return;
+
             } catch (IllegalArgumentException e) {
                 vista.mensajeError(e.getMessage());
             }
         }
     }
+
+
 
     private void modificarHabilidad() {
         List<Habilidad> habilidades = habilidadServicio.buscarTodasLasHabilidades();
@@ -228,7 +247,8 @@ public class MarvelControlador {
             vista.mensaje("No hay habilidades para modificar.");
             return;
         }
-        int id = solicitarInt("Seleccione una habilidad: ", 1, habilidades.size(), false);
+        int id = solicitarInt("Seleccione una habilidad: ", 0, habilidades.size(), false);
+        if (id == 0) return;
         Habilidad habilidad = habilidades.get(id - 1);
         String nombreHabilidad = habilidad.getNombre();
         vista.mensaje("Has seleccionado la habilidad: " + habilidad.getNombre());
@@ -295,7 +315,15 @@ public class MarvelControlador {
             int opcionEvento = solicitarInt("Seleccione una opción: ", 0, 2, false);
             switch (opcionEvento) {
                 case 1 -> {
-                    String nombreEvento = vista.solicitarEntrada("Introduce el nombre del evento: ");
+                    String nombreEvento;
+                    while (true) {
+                        nombreEvento = vista.solicitarEntrada("Introduce el nombre del evento: ");
+                        if (eventoServicio.existeEventoConNombre(nombreEvento)) {
+                            vista.mensajeError("Ya existe un evento con ese nombre. Introduce otro.");
+                        } else {
+                            break;
+                        }
+                    }
                     String lugarEvento = vista.solicitarEntrada("Introduce el lugar del evento: ");
                     eventoServicio.crearEvento(nombreEvento, lugarEvento);
                     evento = eventoServicio.buscarEventoPorNombre(nombreEvento);
@@ -304,7 +332,7 @@ public class MarvelControlador {
                     List<Evento> eventos = eventoServicio.buscarTodosLosEventos();
 
                     vista.mostrarEventos(eventos,false);
-                    String nombreEvento = vista.solicitarEntrada("Introduce el nombre del evento: ");
+                    String nombreEvento = vista.solicitarEntrada("\nIntroduce el nombre del evento: ");
                     try {
                         evento = eventoServicio.buscarEventoPorNombre(nombreEvento);
                     } catch (IllegalArgumentException e) {
@@ -320,7 +348,7 @@ public class MarvelControlador {
             vista.mensaje("Selección de personaje:");
             List<Personaje> personajes = personajeServicio.buscarTodosLosPersonajes();
             vista.mostrarPersonajes(personajes, false);
-            String nombrePersonaje = vista.solicitarEntrada("Introduce el nombre del personaje: ");
+            String nombrePersonaje = vista.solicitarEntrada("\nIntroduce el nombre del personaje: ");
             try {
                 personaje = personajeServicio.buscarPersonajePorNombre(nombrePersonaje);
             } catch (IllegalArgumentException e) {
@@ -457,12 +485,13 @@ public class MarvelControlador {
             return;
         }
         vista.mostrarEventos(eventos, true);
-        int id = solicitarInt("Introduce el número del evento para consultar que personajes participaron " +
+        int id = solicitarInt("\nIntroduce el número del evento para consultar que personajes participaron " +
                 "\n o pulsa 0 para volver al menú principal: ", 0 , eventos.size(),false);
         if (id == 0) return;
         List<Personaje> personajes = participaServicio.buscarPersonajesDeUnEvento(eventos.get(id-1));
         if (personajes.isEmpty()) {
             vista.mensaje("No hay personajes asociados a este evento.");
+            vista.esperarIntro();
             return;
         }
         vista.mensaje("Has solicitado ver los personajes que participan en el evento -> " + eventos.get(id-1).getNombre());
