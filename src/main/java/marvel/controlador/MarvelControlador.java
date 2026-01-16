@@ -504,9 +504,10 @@ public class MarvelControlador {
         String nombreHabilidad;
         while (true) {
             try {
-                nombreHabilidad = vista.solicitarEntrada("Nombre de la habilidad: ").trim();
+                nombreHabilidad = vista.solicitarEntrada("\nNombre de la habilidad: ").trim();
                 long total = personajeServicio.contarPersonajesPorHabilidad(nombreHabilidad);
                 vista.mensaje("Número de personajes con la habilidad " + nombreHabilidad + ": " + total);
+                vista.esperarIntro();
                 return;
             } catch (IllegalArgumentException e) {
                 vista.mensajeError(e.getMessage());
@@ -514,7 +515,7 @@ public class MarvelControlador {
         }
     }
 
-    private int solicitarInt(String mensaje, int min, int max, boolean permitirNulo) {
+    private int solicitarInt(String mensaje, int min, int max,boolean permitirNulo) {
         while (true) {
             String input = vista.solicitarEntrada(mensaje);
             if (permitirNulo) {

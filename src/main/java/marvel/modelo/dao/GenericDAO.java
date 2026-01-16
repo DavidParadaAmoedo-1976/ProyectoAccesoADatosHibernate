@@ -1,26 +1,17 @@
 package marvel.modelo.dao;
 
-import marvel.modelo.util.HibernateUtil;
 import org.hibernate.Session;
 
 public class GenericDAO {
 
-    public GenericDAO() {
-    }
-
-    public static <T> int siguienteId(Class<T> entidad, String nombreCampoId) {
-        Session session = HibernateUtil.get().openSession();
-        String entityName = session
-                .getMetamodel()
-                .entity(entidad)
-                .getName();
-        Integer idMaximo = session.createQuery(
-                "SELECT MAX(entidad." + nombreCampoId + ") " +
-                        "FROM " + entityName + " entidad",
+    public static int siguienteId(Session session, Class<?> entidad, String campoId) {
+        Integer max = session.createQuery(
+                "SELECT max(e." + campoId + ") FROM " + entidad.getSimpleName() + " e",
                 Integer.class
         ).uniqueResult();
-        session.close();
-        return (idMaximo == null) ? 1 : idMaximo + 1;
+
+        return (max != null) ? max + 1 : 1;
     }
 }
+
 

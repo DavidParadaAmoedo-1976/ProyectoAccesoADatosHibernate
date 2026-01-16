@@ -1,36 +1,24 @@
 package marvel.modelo.dao;
 
 import marvel.modelo.entidades.Traje;
-import marvel.modelo.util.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.util.List;
 
 public class TrajeDAO {
 
-    public void guardar(Traje traje) {
-        Session session = HibernateUtil.get().openSession();
-        Transaction tx = session.beginTransaction();
+    public void guardar(Session session, Traje traje) {
         session.persist(traje);
-        tx.commit();
-        session.close();
     }
 
-    public Traje buscarPorId(int id) {
-        Session session = HibernateUtil.get().openSession();
-        Traje traje = session.find(Traje.class, id);
-        session.close();
-        return traje;
+    public Traje buscarPorId(Session session, int id) {
+        return session.find(Traje.class, id);
     }
 
-    public List<Traje> buscarTrajesDisponibles() {
-        Session session = HibernateUtil.get().openSession();
-        List<Traje> lista = session.createQuery(
-                "FROM Traje traje WHERE traje.personaje IS NULL", Traje.class).list();
-        session.close();
-        return lista;
+    public List<Traje> buscarTrajesDisponibles(Session session) {
+        return session.createQuery(
+                "FROM Traje t WHERE t.personaje IS NULL",
+                Traje.class
+        ).getResultList();
     }
-
 }
-

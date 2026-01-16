@@ -1,77 +1,54 @@
 package marvel.modelo.dao;
 
 import marvel.modelo.entidades.Habilidad;
-import marvel.modelo.util.HibernateUtil;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import java.util.List;
 
 public class HabilidadDAO {
-    public void guardarHabilidades(Habilidad habilidad) {
-        Session session = HibernateUtil.get().openSession();
-        Transaction tx = session.beginTransaction();
+
+    public void guardarHabilidades(Session session, Habilidad habilidad) {
         session.persist(habilidad);
-        tx.commit();
-        session.close();
     }
 
-    public List<Habilidad> buscarTodasLasHabilidades() {
-        Session session = HibernateUtil.get().openSession();
-        List<Habilidad> todasLasHabilidades = session
-                .createQuery("FROM Habilidad", Habilidad.class)
-                .getResultList();
-        session.close();
-        return todasLasHabilidades;
+    public List<Habilidad> buscarTodasLasHabilidades(Session session) {
+        return session.createQuery("FROM Habilidad", Habilidad.class).getResultList();
     }
 
-    public Habilidad buscarHabilidadPorNombre(String nombreHabilidad) {
-        Session session = HibernateUtil.get().openSession();
-        Habilidad habilidad = session.createQuery("FROM Habilidad h WHERE lower(h.nombre) = :nombre",
-                Habilidad.class).setParameter("nombre", nombreHabilidad.toLowerCase()).uniqueResult();
-        session.close();
-        return habilidad;
+    public Habilidad buscarHabilidadPorNombre(Session session, String nombre) {
+        return session.createQuery(
+                        "FROM Habilidad h WHERE lower(h.nombre)=:nombre",
+                        Habilidad.class
+                ).setParameter("nombre", nombre.toLowerCase())
+                .uniqueResult();
     }
 
-    public Habilidad buscarHabilidadPorNombreConPersonajes(String nombre) {
-        Session session = HibernateUtil.get().openSession();
-
-        Habilidad habilidad = session.createQuery(
+    public Habilidad buscarHabilidadPorNombreConPersonajes(Session session, String nombre) {
+        return session.createQuery(
                         "SELECT DISTINCT h FROM Habilidad h " +
                                 "LEFT JOIN FETCH h.personajes p " +
                                 "LEFT JOIN FETCH p.habilidades " +
-                                "WHERE lower(h.nombre) = :nombre",
+                                "WHERE lower(h.nombre)=:nombre",
                         Habilidad.class
-                )
-                .setParameter("nombre", nombre)
+                ).setParameter("nombre", nombre.toLowerCase())
+                .uniqueResult();
+    }
+
+    public void actualizarHabilidad(Session session, Habilidad habilidad) {
+        session.merge(habilidad);
+    }
+
+    public void borrarHabilidad(Session session, Habilidad habilidad) {
+        session.remove(habilidad);
+    }
+
+    public boolean habilidadPerteneceAUnPersonaje(Session session, String nombre) {
+        Long count = session.createQuery(
+                        "SELECT COUNT(p) FROM Personaje p JOIN p.habilidades h WHERE lower(h.nombre)=:nombre",
+                        Long.class
+                ).setParameter("nombre", nombre.toLowerCase())
                 .uniqueResult();
 
-        session.close();
-        return habilidad;
-    }
-
-
-    public void borrarHabilidad(Habilidad habilidad) {
-        Session session = HibernateUtil.get().openSession();
-        Transaction tx = session.beginTransaction();
-        session.remove(habilidad);
-        tx.commit();
-        session.close();
-    }
-
-    public void actualizarHabilidad(Habilidad habilidad) {
-        Session session = HibernateUtil.get().openSession();
-        Transaction tx = session.beginTransaction();
-        session.merge(habilidad);
-        tx.commit();
-        session.close();
-    }
-
-    public boolean habilidadPerteneceAUnPersonaje(String nombre) {
-        Session session = HibernateUtil.get().openSession();
-        Long numeroPersonajes = session.createQuery( "select count(p) from Personaje p join p.habilidades h where lower(h.nombre) = :nombre", Long.class)
-                .setParameter("nombre", nombre).uniqueResult();
-        session.close();
-        return numeroPersonajes != null && numeroPersonajes > 0;
+        return count != null && count > 0;
     }
 }
