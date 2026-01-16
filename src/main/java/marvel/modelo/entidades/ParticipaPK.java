@@ -9,9 +9,9 @@ public class ParticipaPK implements Serializable {
     private int personaje;
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ParticipaPK clave)) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof ParticipaPK clave)) return false;
         return personaje == clave.personaje && evento == clave.evento;
     }
 

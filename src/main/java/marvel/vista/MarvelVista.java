@@ -16,7 +16,7 @@ public class MarvelVista {
         MenuEnum[] opciones = MenuEnum.values();
         System.out.println("\n" + "\t".repeat(6) + EstilosEnum.AZUL.getFormato() + EstilosEnum.SUBRAYADO.getFormato() + "*** Menú de opciones ***" + EstilosEnum.RESET.getFormato() + "\n");
         for (int i = 1; i < opciones.length; i++) {
-            System.out.println("\t".repeat(2) + i + ".\t" + EstilosEnum.VERDE.getFormato() + opciones[i].gettexto() + EstilosEnum.RESET.getFormato());
+            System.out.println("\t".repeat(2) + i + ".\t" + EstilosEnum.VERDE.getFormato() + opciones[i].getTexto() + EstilosEnum.RESET.getFormato());
         }
         System.out.println();
         System.out.println("\t".repeat(2) + "0." + EstilosEnum.NARANJA.getFormato() + "\tSalir." + EstilosEnum.RESET.getFormato());

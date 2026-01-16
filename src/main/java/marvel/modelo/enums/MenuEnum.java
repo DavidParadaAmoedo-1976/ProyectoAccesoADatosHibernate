@@ -26,7 +26,7 @@ public enum MenuEnum {
         this.TEXTO = TEXTO;
     }
 
-    public String gettexto() {
+    public String getTexto() {
         return TEXTO;
     }
 
