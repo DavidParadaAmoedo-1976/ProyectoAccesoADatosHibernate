@@ -162,7 +162,6 @@ public class MarvelVista {
                 esperarIntro();
             }
         }
-
     }
 
     public void mostrarPersonajesDeUnEvento(List<Personaje> personajes) {

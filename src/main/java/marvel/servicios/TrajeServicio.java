@@ -20,22 +20,17 @@ public class TrajeServicio {
     public Traje crearTraje(String especificacion) {
         Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
-
         try {
             int id = GenericDAO.siguienteId(session, Traje.class, "id");
-
             Traje traje = new Traje();
             traje.setId(id);
             traje.setEspecificacion(especificacion);
-
             trajeDAO.guardar(session, traje);
-
             tx.commit();
             return traje;
         } finally {
             session.close();
         }
-
     }
 
     public Traje buscarTrajePorId(int idTraje) {

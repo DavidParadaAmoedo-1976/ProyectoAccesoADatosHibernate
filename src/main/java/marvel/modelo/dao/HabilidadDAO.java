@@ -48,7 +48,6 @@ public class HabilidadDAO {
                         Long.class
                 ).setParameter("nombre", nombre.toLowerCase())
                 .uniqueResult();
-
         return count != null && count > 0;
     }
 }

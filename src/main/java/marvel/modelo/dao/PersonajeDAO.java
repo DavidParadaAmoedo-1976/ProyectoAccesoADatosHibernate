@@ -49,7 +49,6 @@ public class PersonajeDAO {
                         Long.class
                 ).setParameter("nombre", nombreHabilidad.toLowerCase())
                 .uniqueResult();
-
         return total != null ? total : 0;
     }
 
@@ -72,7 +71,6 @@ public class PersonajeDAO {
                         Long.class
                 ).setParameter("id", idPersonaje)
                 .uniqueResult();
-
         return count != null && count > 0;
     }
 }

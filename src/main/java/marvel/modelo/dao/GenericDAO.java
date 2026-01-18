@@ -9,7 +9,6 @@ public class GenericDAO {
                 "SELECT max(e." + campoId + ") FROM " + entidad.getSimpleName() + " e",
                 Integer.class
         ).uniqueResult();
-
         return (max != null) ? max + 1 : 1;
     }
 }

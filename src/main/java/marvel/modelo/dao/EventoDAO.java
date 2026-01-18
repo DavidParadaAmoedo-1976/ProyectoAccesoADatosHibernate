@@ -29,7 +29,6 @@ public class EventoDAO {
                         Long.class
                 ).setParameter("nombre", nombre.toLowerCase())
                 .uniqueResult();
-
         return count != null && count > 0;
     }
 }

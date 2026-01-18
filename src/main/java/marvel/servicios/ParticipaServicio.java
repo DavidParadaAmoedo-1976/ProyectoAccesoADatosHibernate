@@ -18,14 +18,12 @@ public class ParticipaServicio {
     public void crearParticipa(Evento evento, Personaje personaje, LocalDate fecha, String rol) {
         Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
-
         try {
             Participa participa = new Participa();
             participa.setEvento(evento);
             participa.setPersonaje(personaje);
             participa.setFecha(fecha);
             participa.setRol(rol);
-
             participaDAO.guardarParticipa(session, participa);
             tx.commit();
         } catch (Exception e) {

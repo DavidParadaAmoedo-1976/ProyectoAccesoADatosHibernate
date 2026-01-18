@@ -22,20 +22,15 @@ public class HabilidadServicio {
         this.personajeDAO = personajeDAO;
     }
 
-    /* ===================== CREAR ===================== */
-
     public void crearHabilidad(String nombre, String descripcion) {
-
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
         if (descripcion == null || descripcion.isBlank()) {
             throw new IllegalArgumentException("La descripción no puede estar vacía");
         }
-
         Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
-
         try {
             int idHabilidad = GenericDAO.siguienteId(session, Habilidad.class, "id");
 
@@ -43,10 +38,8 @@ public class HabilidadServicio {
             habilidad.setId(idHabilidad);
             habilidad.setNombre(nombre);
             habilidad.setDescripcion(descripcion);
-
             habilidadDAO.guardarHabilidades(session, habilidad);
             tx.commit();
-
         } catch (Exception e) {
             tx.rollback();
             throw e;
@@ -54,8 +47,6 @@ public class HabilidadServicio {
             session.close();
         }
     }
-
-    /* ===================== CONSULTAS ===================== */
 
     public List<Habilidad> buscarTodasLasHabilidades() {
         Session session = HibernateUtil.get().openSession();
@@ -67,11 +58,9 @@ public class HabilidadServicio {
     }
 
     public Habilidad buscarHabilidadPorNombre(String nombre) {
-
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
-
         Session session = HibernateUtil.get().openSession();
         try {
             Habilidad habilidad = habilidadDAO.buscarHabilidadPorNombre(session, nombre);
@@ -89,7 +78,6 @@ public class HabilidadServicio {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre de la habilidad no puede estar vacío");
         }
-
         Session session = HibernateUtil.get().openSession();
         try {
             return habilidadDAO.habilidadPerteneceAUnPersonaje(session, nombre);
@@ -98,29 +86,21 @@ public class HabilidadServicio {
         }
     }
 
-    /* ===================== CAMBIOS ===================== */
-
     public void cambiarNombre(String nombreHabilidad, String nuevoNombre) {
-
         if (nuevoNombre == null || nuevoNombre.isBlank()) {
             throw new IllegalArgumentException("El nombre no puede estar vacío");
         }
-
         Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
-
         try {
             Habilidad habilidad =
                     habilidadDAO.buscarHabilidadPorNombre(session, nombreHabilidad);
-
             if (habilidad == null) {
                 throw new IllegalArgumentException("La habilidad no existe");
             }
-
             habilidad.setNombre(nuevoNombre);
             habilidadDAO.actualizarHabilidad(session, habilidad);
             tx.commit();
-
         } catch (Exception e) {
             tx.rollback();
             throw e;
@@ -130,26 +110,20 @@ public class HabilidadServicio {
     }
 
     public void cambiarDescripcion(String nombreHabilidad, String nuevaDescripcion) {
-
         if (nuevaDescripcion == null || nuevaDescripcion.isBlank()) {
             throw new IllegalArgumentException("La descripción no puede estar vacía");
         }
-
         Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
-
         try {
             Habilidad habilidad =
                     habilidadDAO.buscarHabilidadPorNombre(session, nombreHabilidad);
-
             if (habilidad == null) {
                 throw new IllegalArgumentException("La habilidad no existe");
             }
-
             habilidad.setDescripcion(nuevaDescripcion);
             habilidadDAO.actualizarHabilidad(session, habilidad);
             tx.commit();
-
         } catch (Exception e) {
             tx.rollback();
             throw e;
@@ -158,36 +132,26 @@ public class HabilidadServicio {
         }
     }
 
-    /* ===================== BORRAR ===================== */
-
     public void borrarHabilidad(String nombre) {
-
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre de la habilidad no puede estar vacío");
         }
-
         Session session = HibernateUtil.get().openSession();
         Transaction tx = session.beginTransaction();
-
         try {
             Habilidad habilidad =
                     habilidadDAO.buscarHabilidadPorNombreConPersonajes(session, nombre);
-
             if (habilidad == null) {
                 throw new IllegalArgumentException("Habilidad no encontrada");
             }
-
             List<Personaje> personajes =
                     new ArrayList<>(habilidad.getPersonajes());
-
             for (Personaje personaje : personajes) {
                 personaje.getHabilidades().remove(habilidad);
                 personajeDAO.actualizarPersonaje(session, personaje);
             }
-
             habilidadDAO.borrarHabilidad(session, habilidad);
             tx.commit();
-
         } catch (Exception e) {
             tx.rollback();
             throw e;

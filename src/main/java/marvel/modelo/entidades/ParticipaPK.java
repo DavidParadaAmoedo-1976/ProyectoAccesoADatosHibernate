@@ -10,8 +10,13 @@ public class ParticipaPK implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof ParticipaPK clave)) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ParticipaPK)){
+            return false;
+        }
+        ParticipaPK clave = (ParticipaPK) obj;
         return personaje == clave.personaje && evento == clave.evento;
     }
 
